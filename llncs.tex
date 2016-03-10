@@ -35,36 +35,35 @@
 %
 \todo[author=All, inline]{\\citep command available for parenthesis citation with natbib}
 \todo[author=SG, inline]{Set Authors}
-\author{Cool Person 1\inst{1} \and Roger Temam\inst{2}
-Jeffrey Dean \and David Grove \and Craig Chambers \and Kim~B.~Bruce \and
-Elsa Bertino}
+\author{Sarah E. Gerard\inst{1} \and Hans J. Johnson\inst{1}
+\and Joseph M. Reinhardt\inst{1}}
 %
-\authorrunning{Sarah Yeary et al.} % abbreviated author list (for running head)
+\authorrunning{Sarah E. Gerard et al.} % abbreviated author list (for running head)
 %
 %%%% list of authors for the TOC (use if author list has to be modified)
-\tocauthor{Ivar Ekeland, Roger Temam, Jeffrey Dean, David Grove,
-Craig Chambers, Kim B. Bruce, and Elisa Bertino}
+\tocauthor{Sarah E. Gerard, Hans J. Johnson, Joseph M. Reinahrdt}
 %
-\institute{Princeton University, Princeton NJ 08544, USA,\\
-\email{I.Ekeland@princeton.edu},\\ WWW home page:
-\texttt{http://users/\homedir iekeland/web/welcome.html}
-\and
-Universit\'{e} de Paris-Sud,
-Laboratoire d'Analyse Num\'{e}rique, B\^{a}timent 425,\\
-F-91405 Orsay Cedex, France}
+\institute{University of Iowa, Iowa City IA 52402, USA,\\
+\email{sarah-gerard@uiowa.edu}
+}
+
 
 \maketitle              % typeset the title of the contribution
 
 \begin{abstract}
-The abstract should summarize the contents of the paper
-using at least 70 and at most 150 words. It will be set in 9-point
-font size and be inset 1.0 cm from the right and left margins.
-There will be two blank lines before and after the Abstract. \dots
-\keywords{computational geometry, graph theory, Hamilton cycles}
+Lung segmentation is a critical initial step for radiation therapy interventions of lung cancer patients. However, automatic segmentation of lungs with large tumors is a challenging task due to the large variation of both lung and tumor shape between subjects. We present a method that utilizes alpha shapes to automatically segment lungs with large tumors in CT images.
+
+\keywords{segmentation, alpha shapes, lung}
 \end{abstract}
 %
-\section{Fixed-Period Problems: The Sublinear Case}
+\section{Introduction}
 %
+Radiation therapy interventions of lung cancer patients involve acquiring a thoracic CT scan. Typically a respiratory correlated scan, or 4D CT, is also acquired prior to treatment. This produces a huge amount of data, requiring automatic computer-aided methods for further analysis. Accurate delineation of the lungs is a critical initial first step for treatment planning and lung function analysis using image registration.
+
+Normal lungs have high contrast with the surrounding anatomoy, making lung segmentation relatively trivial using thresholding based methods(citations here). However, in the presence of large tumors, conventional threshold based methods fail since tumors are not included.
+
+
+
 With this chapter, the preliminaries are over, and we begin the search
 for periodic solutions to Hamiltonian systems. All this will be done in
 the convex case; that is, we shall study the boundary-value problem
