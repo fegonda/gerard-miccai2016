@@ -60,9 +60,15 @@ Lung segmentation is a critical initial step for radiation therapy interventions
 %
 Radiation therapy interventions of lung cancer patients involve acquiring a thoracic CT scan. Typically a respiratory correlated scan, or 4D CT, is also acquired prior to treatment. This produces a huge amount of data, requiring automatic computer-aided methods for further analysis. Accurate delineation of the lungs is a critical initial first step for treatment planning and lung function analysis using image registration.
 
-Normal lungs have high contrast with the surrounding anatomy, making lung segmentation relatively trivial using thresholding based methods(citations here). However, in the presence of large tumors, conventional threshold based methods fail because tumors are excluded from the segmentation.
+Normal lungs have high contrast with the surrounding anatomy, making lung segmentation relatively trivial using thresholding based methods ~\cite{guo2008,hu2001}. However, in the presence of large tumors, conventional threshold based methods fail because tumors are excluded from the segmentation.
 
-Several methods have been proposed to segment pathological lungs in CT images. In ~\cite{sun2012automated}, a robust active shape model is trained to segment lungs with lung cancer. However, this requires a large training set with annotated corresponding landmark points. 
+Several groups have used statistical shape models to segment pathological lungs in CT images ~\cite{sun2012,sofka2011}. These methods are able to include most pathology since the algorithm uses lung shape statistics rather than image intensity alone. However, building the model requires a large training set with annotated corresponding landmark points. Additionally, the training set is limited to a subset of possible lung shape variations and thus it could fail on cases that are not represented in the training set.
+
+Segmentation by registration has also been used to segment pathological lungs ~\cite{sluimer2005,vanrikxoort2009}. An atlas database is used that contain a ground truth segmentation, and image registration is used to map the atlas segmentation to the test case. This method requires a time consuming registration.
+
+Blah I feel like crap I'm going home.
+
+
 
 %
 \section{Methods}
@@ -71,23 +77,23 @@ Several methods have been proposed to segment pathological lungs in CT images. I
 %
 \subsection{Initial Segmentation}
 %
-
+Describe Junfeng's segmentation here.
 %
 \subsection{Alpha Shape}
 %
-
+Delaunay triangulation, convex hull, alpha shapes
 %
 \subsection{Graph Search}
 %
-
+Optimal surface finding fun!
 %
 \section{Data Sets and Experimental Setup}
 %
-
+Somebody give me manual segmentations so I can show how awesome our method is.
 %
 \section{Results}
 %
-
+Sarah's results are clearly best!!!!!!!!!!
 %
 \section{Summary}
 %
