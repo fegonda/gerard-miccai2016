@@ -81,11 +81,11 @@ First we obtain intensity based segmentation of the lungs using PASS software ~\
 %
 \subsection{Alpha Shapes}
 %
-Using the prior shape knowledge that the lung shape is approximately convex along the ribcage, we observed that taking the convex hull of the initial mask gives a shape that includes large tumors. However, the convex hull over segments the lung in non convex regions such as the mediastinum and diaphragm. 
+Using our prior knowledge that the lung shape is approximately convex along the ribcage, we observed that taking the convex hull of the initial mask gives a shape that includes large tumors. However, the convex hull over segments the lung in non convex regions such as the mediastinum and diaphragm. Using alpha shapes we were able to elegantly obtain a family of shapes representing the initial mask. 
 
-The concept of using alpha shapes to represent a point set was originally presented in ~\cite{edelsbrunner1983}. A convex hull is a generalization of an alpha shape, with all convex hulls being alpha shapes but not all alpha shapes are convex hulls. By adjusting a single parameter $\alpha$ a family of shapes associated with a finite set of points can be obtained.
+The concept of using alpha shapes to represent a point set was originally presented in ~\cite{edelsbrunner1983}. A convex hull is a generalization of an alpha shape; all convex hulls are alpha shapes but not all alpha shapes are convex hulls. By adjusting a single parameter $\alpha$ a family of shapes associated with a finite set of points can be obtained.
 
-Alpha shapes are closely associated with the Delaunay triangulation of a set of points, with the boundary of the alpha shape being a subset of the Delaunay triangulation. The alpha shape consists of all simplices in the Delanunay triangulation such that the radius of the simplex circumsphere is not greater than $ \alpha $. For the two extremes, $ \alpha=\inf $ gives the convex hull and  $ \alpha=0 $ gives the point set. 
+Alpha shapes are closely associated with the Delaunay triangulation of a set of points, with the boundary of the alpha shape being a subset of the Delaunay triangulation. The alpha shape consists of all simplices in the Delaunay triangulation such that the radius of the simplex circumsphere is not greater than $ \alpha $. For the two extremes, $ \alpha=\inf $ gives the convex hull and  $ \alpha=0 $ gives the point set. 
 
 Our goal is to find the alpha shape of the initial lung mask that includes the tumor region. First we obtain a set of points representing the initial mask. The convex hull, or alpha shape with $ \alpha = \inf $, of the initial mask includes the tumor region however it also over segments non convex regions on the lung such as the mediastinum and diaphragm. By reducing alpha we can exclude most of the over segmentation near mediastinum and diaphragm. If alpha is too small, the tumor region is excluded. Figure ~\ref{fig:alphashapes} shows the alpha shape of the initial mask for different values of alpha. 
 
@@ -93,8 +93,8 @@ Our goal is to find the alpha shape of the initial lung mask that includes the t
 \begin{figure}[t]
   \centering
   \begin{tabular}{ccc}
-    \includegraphics[width=1.5in]{figs/alpha200} & 
-    \includegraphics[width=1.5in]{figs/alpha25} & \includegraphics[width=1.5in]{figs/alpha9} \\
+    \includegraphics[trim={200 5 200 5},clip, width=1.55in]{figs/alpha200} & 
+    \includegraphics[trim={200 5 200 5},clip, width=1.55in]{figs/alpha25} & \includegraphics[trim={200 5 200 5},clip, width=1.55in]{figs/alpha9} \\
   \end{tabular}
   \caption{Alpha shape for for $\alpha=200$, $\alpha=25$, and $\alpha=9$ from left to right}
   \label{fig:alphashapes}
@@ -148,7 +148,6 @@ Table ~\ref{tab:results} shows the DICE coefficient and surface distance for lef
     J & XXX & XXX & XXX & XXX & XXX & XXX \\
     K & XXX & XXX & XXX & XXX & XXX & XXX \\
     L & XXX & XXX & XXX & XXX & XXX & XXX \\
-    M & XXX & XXX & XXX & XXX & XXX & XXX \\
     \midrule
     Mean & XXX & XXX & XXX & XXX & XXX & XXX \\
     \bottomrule \\
@@ -163,8 +162,8 @@ Figure ~\ref{fig:steps} shows the resulting segmentation at each step of the met
 \begin{figure}[t]
   \centering
   \begin{tabular}{ccc}
-    \includegraphics[width=1.5in]{figs/step_pass} & 
-    \includegraphics[width=1.5in]{figs/step_alpha} & \includegraphics[width=1.5in]{figs/step_osf} \\
+    \includegraphics[trim={200 5 200 5},clip, width=1.55in]{figs/step_pass} & 
+    \includegraphics[trim={200 5 200 5},clip, width=1.55in]{figs/step_alpha} & \includegraphics[trim={200 5 200 5},clip, width=1.55in]{figs/step_osf} \\
   \end{tabular}
   \caption{Result after each step of the proposed method.}
   \label{fig:steps}
@@ -179,7 +178,7 @@ Our future directions involve learning the optimal alpha for a given subject rat
 %
 \section{Summary}
 %
-Sarah's results are clearly best!!!!!!!!!!
+We proposed a method for segmentation of lungs in the presence of large tumors. The method is utilizes an intensity based segmentation, alpha shapes, and a graph search. A DICE coefficient of XXX and a surface distance of XXX were achieved. The accurate lung segmentation with  inclusion of tumor regions is valuable for radiation therapy treatment planning and further quantitative analysis.
 %
 \section{Acknowledgments}
 %
