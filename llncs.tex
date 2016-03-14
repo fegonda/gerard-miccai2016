@@ -81,11 +81,24 @@ First we obtain intensity based segmentation of the lungs using PASS software ~\
 %
 \subsection{Alpha Shapes}
 %
-The concept of alpha shapes were originally defined in ~\cite{edelsbrunner1983} as a family of shapes associated with a finite set of points. The family of alpha shapes can be obtained by adjusting a single parameter alpha. A convex hull is a generalization of an alpha shape, all convex hulls are alpha shapes but not all alpha shapes are convex hulls. 
+Using the prior shape knowledge that the lung shape is approximately convex along the ribcage, we observed that taking the convex hull of the initial mask gives a shape that includes large tumors. However, the convex hull over segments the lung in non convex regions such as the mediastinum and diaphragm. 
+
+The concept of using alpha shapes to represent a point set was originally presented in ~\cite{edelsbrunner1983}. A convex hull is a generalization of an alpha shape, with all convex hulls being alpha shapes but not all alpha shapes are convex hulls. By adjusting a single parameter $\alpha$ a family of shapes associated with a finite set of points can be obtained.
 
 Alpha shapes are closely associated with the Delaunay triangulation of a set of points, with the boundary of the alpha shape being a subset of the Delaunay triangulation. The alpha shape consists of all simplices in the Delanunay triangulation such that the radius of the simplex circumsphere is not greater than $ \alpha $. For the two extremes, $ \alpha=\inf $ gives the convex hull and  $ \alpha=0 $ gives the point set. 
 
-Our goal is to find an alpha shape of the initial lung mask that includes the tumor region. First we obtain a set of points representing the initial mask. The convex hull, or alpha shape with $ \alpha = \inf $, of the initial mask includes the tumor region however it also over segments non convex regions on the lung such as the mediastinum and diaphragm. By reducing alpha we can exclude most of the over segmentation near mediastinum and diaphragm. If alpha is too small, the tumor region is excluded. Figure XXX shows the alpha shape for different values of alpha. 
+Our goal is to find the alpha shape of the initial lung mask that includes the tumor region. First we obtain a set of points representing the initial mask. The convex hull, or alpha shape with $ \alpha = \inf $, of the initial mask includes the tumor region however it also over segments non convex regions on the lung such as the mediastinum and diaphragm. By reducing alpha we can exclude most of the over segmentation near mediastinum and diaphragm. If alpha is too small, the tumor region is excluded. Figure ~\ref{fig:alphashapes} shows the alpha shape of the initial mask for different values of alpha. 
+
+\todo[author=JMR,inline]{Professor Reinhardt is there a way to crop the black out of the figure within latex?}
+\begin{figure}[t]
+  \centering
+  \begin{tabular}{ccc}
+    \includegraphics[width=1.5in]{figs/alpha200} & 
+    \includegraphics[width=1.5in]{figs/alpha25} & \includegraphics[width=1.5in]{figs/alpha9} \\
+  \end{tabular}
+  \caption{Alpha shape for for $\alpha=200$, $\alpha=25$, and $\alpha=9$ from left to right}
+  \label{fig:alphashapes}
+\end{figure}
 %
 \subsection{Graph Search}
 %
@@ -93,9 +106,9 @@ The final step uses a graph search to remove regions with small over segmentatio
 %
 \section{Data Sets and Experimental Setup}
 %
-In this study we used breath-hold thoracic CT scans from twelve lung cancer subjects about to undergo radiation therapy. All scans were gathered under a protocol approved by the University of Iowa Institutional Review Board (IRB 200905703). All images were resampled to obtain $1\times{}1\times{}1$ mm$^3$ voxels. 
+In this study we used breath-hold thoracic CT scans from twelve lung cancer subjects about to undergo radiation therapy. All scans were gathered under a protocol approved by the University of Iowa Institutional Review Board (IRB 200905703). All images were resampled to obtain $1\times{}1\times{}1$ mm$^3$ voxels. Subjects were chosen that had at least one large tumor. 
 
-Out method was evaluated by comparing to ground truth segmentations done by an expert using XXX software. The DICE coefficent was used for a metric of volume overlap. Additionally, the symmetric surface distance was used to measure the distance between the segmentation boundaries.  
+Out method was evaluated by comparing to ground truth segmentations done by an expert using XXX software. The DICE coefficent was used for a metric of volume overlap. Additionally, the symmetric surface distance was used to measure the distance between the segmentation boundaries. The analysis was performed on both left and right lungs of all subjects. Additionally, we repeated the analysis with only considering the lung containing the tumor.
 
 
 The proposed method was implemented using the jupyter notebook \cite{PER-GRA:2007} rapid prototyping environmnet,  algorithms from ITK\cite{johnson2015itk} python wrapped in SimpleITK \cite{10.3389/fninf.2013.00045} in coordination with vtkDelaunay3D from VTK (www.vtk.org).
@@ -144,7 +157,19 @@ Table ~\ref{tab:results} shows the DICE coefficient and surface distance for lef
   \label{tab:results}
 \end{table}
 
-Figure XXX shows the resulting segmentation at each step of the method for one subject. Figure XXX shows the final segmentation for XXX subjects. 
+Figure ~\ref{fig:steps} shows the resulting segmentation at each step of the method for one subject.
+
+\todo[author=JMR,inline]{Professor Reinhardt is there a way to crop the black out of the figure within latex?}
+\begin{figure}[t]
+  \centering
+  \begin{tabular}{ccc}
+    \includegraphics[width=1.5in]{figs/step_pass} & 
+    \includegraphics[width=1.5in]{figs/step_alpha} & \includegraphics[width=1.5in]{figs/step_osf} \\
+  \end{tabular}
+  \caption{Result after each step of the proposed method.}
+  \label{fig:steps}
+\end{figure}
+Figure XXX shows the final segmentation for XXX subjects. 
 %
 \section{Discussion}
 %
@@ -162,45 +187,6 @@ This work was supported in part by NIH grant CA166703.
 
 
 
-\iffalse
-
-\begin{figure}
-\vspace{2.5cm}
-\caption{This is the caption of the figure displaying a white eagle and
-a white horse on a snow field}
-\end{figure}
-
-
-%
-\paragraph{Notes and Comments.}
-
-
-\begin{table}
-\caption{This is the example table taken out of {\it The
-\TeX{}book,} p.\,246}
-\begin{center}
-\begin{tabular}{r@{\quad}rl}
-\hline
-\multicolumn{1}{l}{\rule{0pt}{12pt}
-                   Year}&\multicolumn{2}{l}{World population}\\[2pt]
-\hline\rule{0pt}{12pt}
-8000 B.C.  &     5,000,000& \\
-  50 A.D.  &   200,000,000& \\
-1650 A.D.  &   500,000,000& \\
-1945 A.D.  & 2,300,000,000& \\
-1980 A.D.  & 4,400,000,000& \\[2pt]
-\hline
-\end{tabular}
-\end{center}
-\end{table}
-\begin{figure}
-    \centering
-    \includegraphics{}
-    \caption{Caption}
-    \label{fig:my_label}
-\end{figure}
-
-\fi
 %
 % ---- Bibliography ----
 %
