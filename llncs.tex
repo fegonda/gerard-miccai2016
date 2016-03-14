@@ -54,26 +54,26 @@
 \maketitle              % typeset the title of the contribution
 
 \begin{abstract}
-Lung segmentation is a critical initial step for radiation therapy interventions of lung cancer patients. However, automatic segmentation of lungs with large tumors is a challenging task due to the large variation of both lung and tumor shape between subjects. We present a method that utilizes alpha shapes to automatically segment lungs with large tumors in CT images.
+Lung segmentation is a critical initial step for radiation therapy interventions of lung cancer patients. However, automatic segmentation of lungs with large tumors is a challenging task due to the large variation of both lung and tumor shape between subjects. We present a method to segment lungs with large tumors in CT images using an initial intensity based segmentation followed by alpha shape construction and graph search. We evaluated our method on twelve subjects. Compared to manual segmentations, we obtained an average DICE coefficient of XXX and an average surface distance of XXX. The results show that our method is able to accurately include large tumors. Additionally, when the method is performed on lungs with no tumors the initial lung segmentation is not significantly changed. 
 
 \keywords{segmentation, alpha shapes, lung}
 \end{abstract}
 %
 \section{Introduction}
 %
-Radiation therapy interventions of lung cancer patients involve acquiring a thoracic CT scan. Typically a respiratory correlated scan, or 4D CT, is also acquired prior to treatment. This produces a huge amount of data, requiring automatic computer-aided methods for further analysis. Accurate delineation of the lungs is a critical initial first step for treatment planning and lung function analysis using image registration.
+Radiation therapy interventions of lung cancer patients involve acquiring a thoracic CT scan. Typically a respiratory correlated scan, or 4D CT, is also acquired prior to treatment. This produces a huge amount of data, requiring automatic computer-aided methods for further analysis. Accurate delineation of the lungs is a critical initial first step for treatment planning and quantitative analysis.
 
-Normal lungs have high contrast with the surrounding anatomy, making lung segmentation relatively trivial using thresholding based methods ~\cite{guo2008,hu2001}. However, in the presence of large tumors, conventional threshold based methods fail because tumors are excluded from the segmentation.
+Normal lungs have high contrast with the surrounding anatomy, making lung segmentation relatively trivial using thresholding based methods ~\cite{guo2008,hu2001}. However, in the presence of large tumors, conventional threshold based methods fail because tumors are excluded from the segmentation. 
 
 Several approaches have been used to segment pathological lungs. Statistical shape models are able to capture the major modes of lung shape variation in a training set and then build a lung model ~\cite{sun2012,sofka2011}. This method requires a large training set with annotated corresponding landmark points. Additionally, the training set is limited to a subset of possible lung shape variations and thus it could fail on cases that are not represented in the training set. Segmentation by registration methods ~\cite{sluimer2005,vanrikxoort2009} make use an atlas or multiple atlases with ground truth segmentations. The atlas segmentation is mapped to a test case using image registration. For good results, a time consuming registration is needed.
 
-In this paper we propose an alpha shape approach for inclusion of large tumors in lung segmentations. Alpha shapes have been used for XXXXX. To the best of our knowledge this is the first time alpha shapes have been used for inclusion of large tumors for lung segmentation.
+In this paper we propose an alpha shape approach for inclusion of large tumors in lung segmentations. Alpha shapes have been used for XXXXX. To the best of our knowledge this is the first time alpha shapes have been used for inclusion of large tumors for lung segmentation. 
 
 
 %
 \section{Methods}
 %
-
+The proposed method has three main steps: initial intensity based segmentation, alpha shape computation of initial mask, and an optimal graph search for final refinement. Each of these steps will be described next.
 %
 \subsection{Initial Segmentation}
 %
@@ -81,25 +81,30 @@ First we obtain intensity based segmentation of the lungs using PASS software ~\
 %
 \subsection{Alpha Shapes}
 %
-Alpha shapes were originally defined in ~\cite{edelsbrunner1983} as a family of shapes associated with a finite set of points. A convex hull is a generalization of an alpha shape, all convex hulls are alpha shapes, but not all alpha shapes are convex hulls. The family of alpha shapes are obtained by adjusting a single parameter alpha. 
+The concept of alpha shapes were originally defined in ~\cite{edelsbrunner1983} as a family of shapes associated with a finite set of points. The family of alpha shapes can be obtained by adjusting a single parameter alpha. A convex hull is a generalization of an alpha shape, all convex hulls are alpha shapes but not all alpha shapes are convex hulls. 
 
-Alpha shapes are closely associated with the Delaunay triangulation of a set of points. The boundary of the alpha shape is a subset of the Delaunay triangulation. The alpha shape consists of all simplices in the Delanunay triangulation such that the radius of the circumsphere is not greater than alpha. For the two extremes, alpha of inifinity gives the convex hull and alpha of zero gives the point set. 
+Alpha shapes are closely associated with the Delaunay triangulation of a set of points, with the boundary of the alpha shape being a subset of the Delaunay triangulation. The alpha shape consists of all simplices in the Delanunay triangulation such that the radius of the simplex circumsphere is not greater than $ \alpha $. For the two extremes, $ \alpha=\inf $ gives the convex hull and  $ \alpha=0 $ gives the point set. 
+
+Our goal is to find an alpha shape of the initial lung mask that includes the tumor region. First we obtain a set of points representing the initial mask. The convex hull, or alpha shape with $ \alpha = \inf $, of the initial mask includes the tumor region however it also over segments non convex regions on the lung such as the mediastinum and diaphragm. By reducing alpha we can exclude most of the over segmentation near mediastinum and diaphragm. If alpha is too small, the tumor region is excluded. Figure XXX shows the alpha shape for different values of alpha. 
 %
 \subsection{Graph Search}
 %
-
+The final step uses a graph search to remove regions with small over segmentation. The method will only briefly be described here, see ~\cite{li2006} for a detailed description of the method. 
 %
 \section{Data Sets and Experimental Setup}
 %
-Using the jupyter notebook \cite{PER-GRA:2007} rapid prototyping environmnet,  algorithms from ITK\cite{johnson2015itk} python wrapped in SimpleITK \cite{10.3389/fninf.2013.00045} in coordination with vtkDelaunay3D from VTK (www.vtk.org).
+In this study we used breath-hold thoracic CT scans from twelve lung cancer subjects about to undergo radiation therapy. All scans were gathered under a protocol approved by the University of Iowa Institutional Review Board (IRB 200905703). All images were resampled to obtain $1\times{}1\times{}1$ mm$^3$ voxels. 
 
-In this study we used breath-hold thoracic CT scans from twelve lung cancer subjects
-about to undergo radiation therapy. All scans were gathered under a protocol approved by the University of Iowa Institutional Review Board (IRB 200905703). All images were resampled to obtain $1\times{}1\times{}1$ mm$^3$ voxels. Ground truth segmentations were generated by an expert on XXX transverse slices per subject using XXX software. 
+Out method was evaluated by comparing to ground truth segmentations done by an expert using XXX software. The DICE coefficent was used for a metric of volume overlap. Additionally, the symmetric surface distance was used to measure the distance between the segmentation boundaries.  
+
+
+The proposed method was implemented using the jupyter notebook \cite{PER-GRA:2007} rapid prototyping environmnet,  algorithms from ITK\cite{johnson2015itk} python wrapped in SimpleITK \cite{10.3389/fninf.2013.00045} in coordination with vtkDelaunay3D from VTK (www.vtk.org).
+
+
 %
 \section{Results}
 %
-\todo[author=SG,inline]{Add table columns: dice(left/rght), surface distance (left/right)}
-
+Table ~\ref{tab:results} shows the DICE coefficient and surface distance for left and right lungs of each subject. 
 
 % define table layout and column spacing here
 \newlength\intercol
@@ -131,16 +136,21 @@ about to undergo radiation therapy. All scans were gathered under a protocol app
     K & XXX & XXX & XXX & XXX & XXX & XXX \\
     L & XXX & XXX & XXX & XXX & XXX & XXX \\
     M & XXX & XXX & XXX & XXX & XXX & XXX \\
+    \midrule
+    Mean & XXX & XXX & XXX & XXX & XXX & XXX \\
     \bottomrule \\
   \end{tabular}
   \caption{Results for proposed method compared to manual segmentations.}
   \label{tab:results}
 \end{table}
 
+Figure XXX shows the resulting segmentation at each step of the method for one subject. Figure XXX shows the final segmentation for XXX subjects. 
 %
 \section{Discussion}
 %
 The experiments were run on a Linux machine with an Intel Xeon 2.27 GHz CPU and 48 GB of RAM. Generating the alpha shape and the graph search takes XXX and XXX minutes of computer time, respectively. The manual segmentation took on average XXX per lung.
+
+Our future directions involve learning the optimal alpha for a given subject rather than using the same alpha for all subject. Additionally, we plan to experiment with learning a spatially varying alpha to overcome over segmentation near the aorta.
 %
 \section{Summary}
 %
