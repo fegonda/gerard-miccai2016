@@ -12,6 +12,8 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 
+% http://mirror.utexas.edu/ctan/obsolete/macros/latex/contrib/subfigure/subfigure.pdf
+\usepackage[tight]{subfigure}
 
 \begin{document}
 %
@@ -28,7 +30,6 @@
 
 \mainmatter              % start of the contributions
 %
-\todo[author=SG,inline]{Share document with Prof. Reinhardt once this is in at least a rough draft form}
 \todo[author=SG,inline]{Change title and running title}
 \title{Ultimate Best Total Lung Segmentation via Alpha Shapes in the presence of large volume tumors}
 %
@@ -47,14 +48,14 @@
 \tocauthor{Sarah E. Gerard, Hans J. Johnson, Joseph M. Reinahrdt}
 %
 \institute{University of Iowa, Iowa City IA 52402, USA,\\
-\email{sarah-gerard@uiowa.edu}
-}
+\email{sarah-gerard@uiowa.edu}}
+\institute{Iowa Institute for Biomedical Imaging, Iowa City IA 52402, USA}
 
 
 \maketitle              % typeset the title of the contribution
 
 \begin{abstract}
-Lung segmentation is a critical initial step for radiation therapy interventions of lung cancer patients. However, automatic segmentation of lungs with large tumors is a challenging task due to the large variation of both lung and tumor shape between subjects. We present a method to segment lungs with large tumors in CT images using an initial intensity based segmentation followed by alpha shape construction and graph search. We evaluated our method on twelve subjects. Compared to manual segmentations, we obtained an average DICE coefficient of XXX and an average surface distance of XXX. The results show that our method is able to accurately include large tumors. Additionally, when the method is performed on lungs with no tumors the initial lung segmentation is not significantly changed. 
+Lung segmentation is a critical initial step for radiation therapy interventions of lung cancer patients. However, automatic segmentation of lungs with large tumors is a challenging task due to the large variation of both lung and tumor shape between subjects. We present a method to segment lungs with large tumors in CT images using an initial intensity based segmentation followed by alpha shape construction and graph search. We evaluated our method on twelve subjects. Compared to manual segmentations, we obtained an average DICE coefficient of XXX and an average surface distance of \todo[author=SG,inline]{Need distance values for abstract}. The results show that our method is able to accurately include large tumors. Additionally, when the method is performed on lungs with no tumors the initial lung segmentation is not significantly changed. 
 
 \keywords{segmentation, alpha shapes, lung}
 \end{abstract}
@@ -67,7 +68,7 @@ Normal lungs have high contrast with the surrounding anatomy, making lung segmen
 
 Several approaches have been used to segment pathological lungs. Statistical shape models are able to capture the major modes of lung shape variation in a training set and then build a lung model ~\cite{sun2012,sofka2011}. This method requires a large training set with annotated corresponding landmark points. Additionally, the training set is limited to a subset of possible lung shape variations and thus it could fail on cases that are not represented in the training set. Segmentation by registration methods ~\cite{sluimer2005,vanrikxoort2009} make use an atlas or multiple atlases with ground truth segmentations. The atlas segmentation is mapped to a test case using image registration. For good results, a time consuming registration is needed.
 
-In this paper we propose an alpha shape approach for inclusion of large tumors in lung segmentations. Alpha shapes have been used for XXXXX. To the best of our knowledge this is the first time alpha shapes have been used for inclusion of large tumors for lung segmentation. 
+In this paper we propose an alpha shape approach for inclusion of large tumors in lung segmentations. Alpha shapes have been used for \todo[author=SG,inline]{need description of how alpha shapes used XXXXX}. To the best of our knowledge this is the first time alpha shapes have been used for inclusion of large tumors for lung segmentation. 
 
 
 %
@@ -89,29 +90,74 @@ Alpha shapes are closely associated with the Delaunay triangulation of a set of 
 
 Our goal is to find the alpha shape of the initial lung mask that includes the tumor region. First we obtain a set of points representing the initial mask. The convex hull, or alpha shape with $ \alpha = \inf $, of the initial mask includes the tumor region however it also over segments non convex regions on the lung such as the mediastinum and diaphragm. By reducing alpha we can exclude most of the over segmentation near mediastinum and diaphragm. If alpha is too small, the tumor region is excluded. Figure ~\ref{fig:alphashapes} shows the alpha shape of the initial mask for different values of alpha. 
 
-\begin{figure}[t]
+%
+% http://texblog.org/2007/08/28/placing-figurestables-side-by-side-subfigure/
+%
+\begin{figure}[ht!]
   \centering
-  \begin{tabular}{cccc}
-    \includegraphics[trim={5 160 340 110},clip,width=1.1in, height=1.4in]{figs/ct} &
-    \includegraphics[trim={5 150 300 100},clip,width=1.1in, height=1.4in]{figs/pass} &
-    \includegraphics[trim={150 100 150 100},clip,width=1.1in]{figs/points} &
-    \includegraphics[trim={150 100 150 100},clip,width=1.1in]{figs/tris_200} \\
-    \includegraphics[trim={150 100 150 100},clip,width=1.1in]{figs/tris_66} &
-    \includegraphics[trim={150 100 150 100},clip,width=1.1in]{figs/tris_50} &
-    \includegraphics[trim={150 100 150 100},clip,width=1.1in]{figs/tris_33} & 
-    \includegraphics[trim={150 100 150 100},clip,width=1.1in]{figs/tris_15} \\
-  \end{tabular}
-  \caption{CT image and corresponding initial mask. Point set used to represent mask. Alpha shaepes for decreasing alpha from 200 to 15.}
+  \subfigure[CT]{
+  \includegraphics[trim={5 160 340 110},clip,width=1.0in, height=1.4in]{figs/ct}
+  \label{fig:tris_CT}
+  }
+  \subfigure[Mask]{
+  \includegraphics[trim={5 150 300 100},clip,width=1.0in, height=1.4in]{figs/pass}
+  \label{fig:tris_Mask}
+  }
+  \subfigure[Point Set]{
+  \includegraphics[trim={150 100 150 100},clip,width=1.0in]{figs/points}
+  \label{fig:tris_points}
+  }
+  \subfigure[$\alpha = 200$]{
+  \includegraphics[trim={150 100 150 100},clip,width=1.0in]{figs/tris_200}
+  \label{fig:tris_alpha_200}
+  }
+  \subfigure[$\alpha = 66$]{
+  \includegraphics[trim={150 100 150 100},clip,width=1.0in]{figs/tris_66}
+  \label{fig:tris_alpha_66}
+  }
+  \subfigure[$\alpha = 50$]{
+  \includegraphics[trim={150 100 150 100},clip,width=1.0in]{figs/tris_50}
+  \label{fig:tris_alpha_50}
+  }
+  \subfigure[$\alpha = 33$]{
+  \includegraphics[trim={150 100 150 100},clip,width=1.0in]{figs/tris_33}
+  \label{fig:tris_alpha_33}
+  }
+  \subfigure[$\alpha = 15$]{
+  \includegraphics[trim={150 100 150 100},clip,width=1.0in]{figs/tris_15}
+  \label{fig:tris_alpha_15}
+  }
+
+%  \begin{tabular}{cccc}
+%    \includegraphics[trim={5 160 340 110},clip,width=1.1in, height=1.4in]{figs/ct} &
+%    \includegraphics[trim={5 150 300 100},clip,width=1.1in, height=1.4in]{figs/pass} &
+%    \includegraphics[trim={150 100 150 100},clip,width=1.1in]{figs/points} &
+%    \includegraphics[trim={150 100 150 100},clip,width=1.1in]{figs/tris_200} \\
+%    \includegraphics[trim={150 100 150 100},clip,width=1.1in]{figs/tris_66} &
+%    \includegraphics[trim={150 100 150 100},clip,width=1.1in]{figs/tris_50} &
+%    \includegraphics[trim={150 100 150 100},clip,width=1.1in]{figs/tris_33} & 
+%    \includegraphics[trim={150 100 150 100},clip,width=1.1in]{figs/tris_15} \\
+%  \end{tabular}
+  \caption{~\ref{fig:tris_CT} CT image, ~\ref{fig:tris_Mask} initial mask, ~\ref{fig:tris_points} point set used to represent mask, ~\ref{fig:tris_alpha_200} - ~\ref{fig:tris_alpha_15} Delaunay triangles that compose the alpha shape for decreasing alpha values. Note: this is a 2D example for illustrative purposes, the actual method is performed in 3D with tetrahedrons instead of triangles. }
   \label{fig:tris}
 \end{figure}
 
+
 \begin{figure}[t]
   \centering
-  \begin{tabular}{ccc}
-    \includegraphics[trim={200 5 200 5},clip, width=1.55in]{figs/alpha200} & 
-    \includegraphics[trim={200 5 200 5},clip, width=1.55in]{figs/alpha25} & \includegraphics[trim={200 5 200 5},clip, width=1.55in]{figs/alpha9} \\
-  \end{tabular}
-  \caption{Alpha shape for for $\alpha=200$, $\alpha=25$, and $\alpha=9$ from left to right}
+    \subfigure[$\alpha = 200$]{
+    \includegraphics[trim={200 5 200 5},clip, width=1.3in]{figs/alpha200} 
+    \label{fig:img_alpha200}
+    }
+    \subfigure[$\alpha = 25$]{
+    \includegraphics[trim={200 5 200 5},clip, width=1.3in]{figs/alpha25}
+    \label{fig:img_alpha25}
+    }
+    \subfigure[$\alpha = 9$]{
+    \includegraphics[trim={200 5 200 5},clip, width=1.3in]{figs/alpha9} 
+    \label{fig:img_alpha9}
+    }
+  \caption{Alpha shape segmentation for different $\alpha$}
   \label{fig:alphashapes}
 \end{figure}
 %
@@ -123,10 +169,10 @@ The final step uses a graph search to remove regions with small over segmentatio
 %
 In this study we used breath-hold thoracic CT scans from twelve lung cancer subjects about to undergo radiation therapy. All scans were gathered under a protocol approved by the University of Iowa Institutional Review Board (IRB 200905703). All images were resampled to obtain $1\times{}1\times{}1$ mm$^3$ voxels. Subjects were chosen that had at least one large tumor. 
 
-Out method was evaluated by comparing to ground truth segmentations done by an expert using XXX software. The DICE coefficent was used for a metric of volume overlap. Additionally, the symmetric surface distance was used to measure the distance between the segmentation boundaries. The analysis was performed on both left and right lungs of all subjects. Additionally, we repeated the analysis with only considering the lung containing the tumor.
+Out method was evaluated by comparing to ground truth segmentations done by an expert using \todo[author=SG,inline]{Fill in software name here XXX} software. The DICE coefficient was used for a metric of volume overlap. Additionally, the symmetric surface distance was used to measure the distance between the segmentation boundaries. The analysis was performed on both left and right lungs of all subjects. Additionally, we repeated the analysis with only considering the lung containing the tumor.
 
 
-The proposed method was implemented using the jupyter notebook \cite{PER-GRA:2007} rapid prototyping environmnet,  algorithms from ITK\cite{johnson2015itk} python wrapped in SimpleITK \cite{10.3389/fninf.2013.00045} in coordination with vtkDelaunay3D from VTK (www.vtk.org).
+The proposed method was implemented using the jupyter notebook \cite{PER-GRA:2007} rapid prototyping environment,  algorithms from ITK\cite{johnson2015itk} python wrapped in SimpleITK \cite{10.3389/fninf.2013.00045} in coordination with vtkDelaunay3D from VTK (www.vtk.org).
 
 
 %
@@ -176,10 +222,18 @@ Figure ~\ref{fig:steps} shows the resulting segmentation at each step of the met
 
 \begin{figure}[t]
   \centering
-  \begin{tabular}{ccc}
-    \includegraphics[trim={200 5 200 5},clip, width=1.55in]{figs/step_pass} & 
-    \includegraphics[trim={200 5 200 5},clip, width=1.55in]{figs/step_alpha} & \includegraphics[trim={200 5 200 5},clip, width=1.55in]{figs/step_osf} \\
-  \end{tabular}
+    \subfigure[Initial Mask]{
+    \includegraphics[trim={200 5 200 5},clip, width=1.3in]{figs/step_pass}
+    \label{fig:pass}
+    }
+    \subfigure[Alpha Shape]{
+    \includegraphics[trim={200 5 200 5},clip, width=1.3in]{figs/step_alpha}
+    \label{fig:alpha}
+    }
+    \subfigure[Graph Search]{
+    \includegraphics[trim={200 5 200 5},clip, width=1.3in]{figs/step_osf}
+    \label{fig:osf}
+    }
   \caption{Result after each step of the proposed method.}
   \label{fig:steps}
 \end{figure}
