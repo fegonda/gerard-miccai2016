@@ -55,7 +55,7 @@
 \maketitle              % typeset the title of the contribution
 
 \begin{abstract}
-Lung segmentation is a critical initial step for radiation therapy interventions of lung cancer patients. However, automatic segmentation of lungs with large tumors is a challenging task due to the large variation of both lung and tumor shape between subjects. We present a method to segment lungs with large tumors in CT images using an initial intensity based segmentation followed by alpha shape construction and graph search. We evaluated our method on twelve subjects. Compared to manual segmentations, we obtained an average DICE coefficient of XXX and an average surface distance of \todo[author=SG,inline]{Need distance values for abstract}. The results show that our method is able to accurately include large tumors. Additionally, when the method is performed on lungs with no tumors the initial lung segmentation is not significantly changed. 
+Lung segmentation is a critical initial step for radiation therapy interventions of lung cancer patients. However, automatic segmentation of lungs with large tumors is a challenging task due to the large variation of both lung and tumor shape between subjects. We present a method to segment lungs with large tumors in CT images using an initial intensity based segmentation followed by alpha shape construction and graph search. We evaluated our method on twelve subjects. Compared to manual segmentations, we obtained an average DICE coefficient of 0.970 and an average surface distance of 0.809 mm. The results show that our method is able to accurately include large tumors. Additionally, when the method is performed on lungs with no tumors the initial lung segmentation is not significantly changed. 
 
 \keywords{segmentation, alpha shapes, lung}
 \end{abstract}
@@ -163,13 +163,19 @@ Our goal is to find the alpha shape of the initial lung mask that includes the t
 %
 \subsection{Graph Search}
 %
-The final step uses a graph search to remove regions with small over segmentation. The method will only briefly be described here, see ~\cite{li2006} for a detailed description of the method. 
+The final step uses a graph search to remove regions with small over segmentation. The method will only briefly be described here, see~\cite{li2006} for a detailed description of the method. 
 %
 \section{Data Sets and Experimental Setup}
 %
-In this study we used breath-hold thoracic CT scans from twelve lung cancer subjects about to undergo radiation therapy. All scans were gathered under a protocol approved by the University of Iowa Institutional Review Board (IRB 200905703). All images were resampled to obtain $1\times{}1\times{}1$ mm$^3$ voxels. Subjects were chosen that had at least one large tumor. 
+In this study we used breath-hold thoracic CT scans from twelve lung cancer subjects about to undergo radiation therapy. All scans were gathered under a protocol approved by the 
+XXXXXXXXXXX YYYYYYY 
+%University of Iowa 
+Institutional Review Board 
+%(IRB 200905703). 
+(IRB ZZZZZZZZZ).
+All images were resampled to obtain $1\times{}1\times{}1$ mm$^3$ voxels. Subjects were chosen that had at least one large tumor. 
 
-Out method was evaluated by comparing to ground truth segmentations done by an expert using \todo[author=SG,inline]{Fill in software name here XXX} software. The DICE coefficient was used for a metric of volume overlap. Additionally, the symmetric surface distance was used to measure the distance between the segmentation boundaries. The analysis was performed on both left and right lungs of all subjects. Additionally, we repeated the analysis with only considering the lung containing the tumor.
+Out method was evaluated by comparing to ground truth segmentations done by an expert using MimVista 6.4.7 software. The DICE coefficient was used for a metric of volume overlap. Additionally, the average unsigned symmetric surface distance was used to measure the distance between the segmentation boundaries. The analysis was performed on both left and right lungs of all subjects. Additionally, we repeated the analysis with only considering the lung containing the tumor.
 
 
 The proposed method was implemented using the jupyter notebook \cite{PER-GRA:2007} rapid prototyping environment,  algorithms from ITK\cite{johnson2015itk} python wrapped in SimpleITK \cite{10.3389/fninf.2013.00045} in coordination with vtkDelaunay3D from VTK (www.vtk.org).
@@ -178,7 +184,25 @@ The proposed method was implemented using the jupyter notebook \cite{PER-GRA:200
 %
 \section{Results}
 %
+
+Figure ~\ref{fig:dice} and ~\ref{fig:dist} shows DICE coefficient and average unsigned symmetric surface distance for left and right lungs of all subjects.
+\begin{figure}[t]
+  \centering
+    \includegraphics[width=4.5in]{figs/dice}
+  \caption{DICE coefficient for all subjects. "T" indicates lungs with tumors.}
+  \label{fig:dice}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+    \includegraphics[width=4.5in]{figs/distUnsignSym}
+  \caption{Average unsigned symmetric surface distance for all subjects. "T" indicates lungs with tumors.}
+  \label{fig:dist}
+\end{figure}
+
+\iffalse
 Table ~\ref{tab:results} shows the DICE coefficient and surface distance for left and right lungs of each subject. 
+
 
 % define table layout and column spacing here
 \newlength\intercol
@@ -216,6 +240,7 @@ Table ~\ref{tab:results} shows the DICE coefficient and surface distance for lef
   \caption{Results for proposed method compared to manual segmentations.}
   \label{tab:results}
 \end{table}
+\fi
 
 Figure ~\ref{fig:steps} shows the resulting segmentation at each step of the method for one subject.
 
@@ -241,6 +266,9 @@ Figure XXX shows the final segmentation for XXX subjects.
 %
 \section{Discussion}
 %
+
+The method shows good results with a DICE coefficient of 0.970 and average unsigned symmetric surface distance of 0.809 mm for all subjects. This surface distance is on the sub-voxel level. Additionally, we split the lungs into tumor and non-tumor groups. The DICE coefficient was 0.967 and 0.971 for tumor and non-tumor groups, respectively. The unsigned symmetric surface distance was 0.826 mm and 0.794 mm for tumor and non-tumor groups, respectively.
+
 The experiments were run on a Linux machine with an Intel Xeon 2.27 GHz CPU and 48 GB of RAM. Generating the alpha shape and the graph search takes XXX and XXX minutes of computer time, respectively. The manual segmentation took on average XXX per lung.
 
 Our future directions involve learning the optimal alpha for a given subject rather than using the same alpha for all subject. Additionally, we plan to experiment with learning a spatially varying alpha to overcome over segmentation near the aorta.
@@ -251,8 +279,9 @@ We proposed a method for segmentation of lungs in the presence of large tumors. 
 %
 \section{Acknowledgments}
 %
-This work was supported in part by NIH grant CA166703.
-
+This work was supported in part by 
+%NIH grant CA166703.
+XXXXXXX XXXXXXXXXXX.
 
 
 %
