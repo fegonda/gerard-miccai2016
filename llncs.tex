@@ -78,10 +78,12 @@ The proposed method has three main steps: initial intensity based segmentation, 
 %
 \subsection{Initial Segmentation}
 %
+
 First we obtain intensity based segmentation of the lungs using PASS software ~\cite{guo2008}. This method consists of three main steps: extraction of lungs using optimal thresholding, separation of the right and left lungs, and optimal smoothing to smooth the lung boundaries. This gives a lung mask for both left and right lung, however large tumors are not included. We will refer to this as the initial mask. The next steps will process initial mask for the left and right lung separately. 
 %
 \subsection{Alpha Shapes}
 %
+\todo[author=SG,inline]{Make this section better}
 Using our prior knowledge that the lung shape is approximately convex along the ribcage, we observed that taking the convex hull of the initial mask gives a shape that includes large tumors. However, the convex hull over segments the lung in non convex regions such as the mediastinum and diaphragm. Using alpha shapes we were able to elegantly obtain a family of shapes representing the initial mask. 
 
 The concept of using alpha shapes to represent a point set was originally presented in ~\cite{edelsbrunner1983}. A convex hull is a generalization of an alpha shape; all convex hulls are alpha shapes but not all alpha shapes are convex hulls. By adjusting a single parameter $\alpha$ a family of shapes associated with a finite set of points can be obtained.
@@ -163,7 +165,12 @@ Our goal is to find the alpha shape of the initial lung mask that includes the t
 %
 \subsection{Graph Search}
 %
-The final step uses a graph search to remove regions with small over segmentation. The method will only briefly be described here, see~\cite{li2006} for a detailed description of the method. 
+\todo[author=SG,inline]{Add brief description of OSF}
+The alpha shape generally over segments the mediastinum as a result of the non-convex shape. This could be eliminated by reducing $\alpha$, however then we way remove tumor regions as well. To reduce the mediastinum over segmentation, we use a graph search framework. The method will only briefly be described here, see~\cite{li2006} for a detailed description of the method. 
+
+The graph search requires a shape prior, here we use the alpha shape from the previous step as the shape prior. A graph consisting of nodes and edges is built in a margin around the shape prior. The nodes have an associated cost reflecting the unlikeliness that it belongs to the lung surface. We use the inverse gradient of the CT image for the cost, as the lung surface has a high image gradient. Edges are used to enforce smoothness constraints, or how much the topology of the resulting segmentation can deviate from the shape prior. The globally optimal surface is obtained by using a maximum flow algorithm on a closely derived graph. 
+ 
+
 %
 \section{Data Sets and Experimental Setup}
 %
@@ -184,6 +191,30 @@ The proposed method was implemented using the jupyter notebook \cite{PER-GRA:200
 %
 \section{Results}
 %
+Figure ~\ref{fig:resultseg} shows the final segmentation for four subjects. 
+\todo[author=HJ,inline]{Hard to see blue contour, ask Prof. Johnson if we can make contour thicker in Slicer.}
+\todo[author=SG,inline]{Maybe show result at each step for each subject and remove other figure that shows each step for one subject}
+\begin{figure}[t]
+  \centering
+    \subfigure[PFS-031]{
+    \includegraphics[width=2in]{figs/result1}
+    \label{fig:result1}
+    }
+    \subfigure[PFS-032]{
+    \includegraphics[width=2in]{figs/result2}
+    \label{fig:result2}
+    }
+    \subfigure[PFS-011]{
+    \includegraphics[width=2in]{figs/result3}
+    \label{fig:result3}
+    }
+    \subfigure[PFS-020]{
+    \includegraphics[width=2in]{figs/result4}
+    \label{fig:result4}
+    }
+  \caption{Result for four subjects. Red fill indicates our result, blue contour represents manual segmentation.}
+  \label{fig:resultseg}
+\end{figure}
 
 Figure ~\ref{fig:dice} and ~\ref{fig:dist} shows DICE coefficient and average unsigned symmetric surface distance for left and right lungs of all subjects.
 \begin{figure}[t]
@@ -262,7 +293,12 @@ Figure ~\ref{fig:steps} shows the resulting segmentation at each step of the met
   \caption{Result after each step of the proposed method.}
   \label{fig:steps}
 \end{figure}
-Figure XXX shows the final segmentation for XXX subjects. 
+
+
+
+
+
+
 %
 \section{Discussion}
 %
