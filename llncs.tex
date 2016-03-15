@@ -89,7 +89,22 @@ Alpha shapes are closely associated with the Delaunay triangulation of a set of 
 
 Our goal is to find the alpha shape of the initial lung mask that includes the tumor region. First we obtain a set of points representing the initial mask. The convex hull, or alpha shape with $ \alpha = \inf $, of the initial mask includes the tumor region however it also over segments non convex regions on the lung such as the mediastinum and diaphragm. By reducing alpha we can exclude most of the over segmentation near mediastinum and diaphragm. If alpha is too small, the tumor region is excluded. Figure ~\ref{fig:alphashapes} shows the alpha shape of the initial mask for different values of alpha. 
 
-\todo[author=JMR,inline]{Professor Reinhardt is there a way to crop the black out of the figure within latex?}
+\begin{figure}[t]
+  \centering
+  \begin{tabular}{cccc}
+    \includegraphics[trim={5 160 340 110},clip,width=1.1in, height=1.4in]{figs/ct} &
+    \includegraphics[trim={5 150 300 100},clip,width=1.1in, height=1.4in]{figs/pass} &
+    \includegraphics[trim={150 100 150 100},clip,width=1.1in]{figs/points} &
+    \includegraphics[trim={150 100 150 100},clip,width=1.1in]{figs/tris_200} \\
+    \includegraphics[trim={150 100 150 100},clip,width=1.1in]{figs/tris_66} &
+    \includegraphics[trim={150 100 150 100},clip,width=1.1in]{figs/tris_50} &
+    \includegraphics[trim={150 100 150 100},clip,width=1.1in]{figs/tris_33} & 
+    \includegraphics[trim={150 100 150 100},clip,width=1.1in]{figs/tris_15} \\
+  \end{tabular}
+  \caption{CT image and corresponding initial mask. Point set used to represent mask. Alpha shaepes for decreasing alpha from 200 to 15.}
+  \label{fig:tris}
+\end{figure}
+
 \begin{figure}[t]
   \centering
   \begin{tabular}{ccc}
@@ -158,7 +173,7 @@ Table ~\ref{tab:results} shows the DICE coefficient and surface distance for lef
 
 Figure ~\ref{fig:steps} shows the resulting segmentation at each step of the method for one subject.
 
-\todo[author=JMR,inline]{Professor Reinhardt is there a way to crop the black out of the figure within latex?}
+
 \begin{figure}[t]
   \centering
   \begin{tabular}{ccc}
