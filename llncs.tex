@@ -31,16 +31,16 @@
 \mainmatter              % start of the contributions
 %
 \todo[author=SG,inline]{Change title and running title}
-\title{Ultimate Best Total Lung Segmentation via Alpha Shapes in the presence of large volume tumors}
+\title{Lung Segmentation via Alpha Shapes in the presence of large tumors}
 %
 \titlerunning{Alpha Shape Lung Segmentation}  % abbreviated title (for running head)
 %                                     also used for the TOC unless
 %                                     \toctitle is used
 %
 \todo[author=All, inline]{\\citep command available for parenthesis citation with natbib}
-\todo[author=SG, inline]{Set Authors}
+\todo[author=SG, inline]{Make anonymous}
 \author{Sarah E. Gerard\inst{1} \and Hans J. Johnson\inst{1}
-\and Joseph M. Reinhardt\inst{1}}
+\and John Bayouth \and Kaifang Du \and Junfeng Guo \and Joseph M. Reinhardt\inst{1}}
 %
 \authorrunning{Sarah E. Gerard et al.} % abbreviated author list (for running head)
 %
@@ -84,13 +84,16 @@ First we obtain intensity based segmentation of the lungs using PASS software ~\
 \subsection{Alpha Shapes}
 %
 \todo[author=SG,inline]{Make this section better}
-Using our prior knowledge that the lung shape is approximately convex along pleural surface, we observed that taking the convex hull of the initial mask gives a shape that includes large tumors. However, the convex hull of the inital mask also includes non lung tissue regions near the mediastinum and diaphragm. Using alpha shapes we were able to elegantly obtain a family of shapes representing the initial mask. 
+The concept of using alpha shapes to represent a point set was originally presented in ~\cite{edelsbrunner1983}.
+Given a finite set of points $P \epsilon \mathbb{R}^3$ and $ 0 \leq \alpha \leq \infty $ an $\alpha$-shape can be used to represent the shape of $P$. If $\alpha=\infy$ the $\alpha$-shape is equivalent to the convex hull. For decreasing $\alpha$, the $\alpha$ shape size gradually decreases until only $P$ remains at $\alpha=0$. The result is a family of shapes that can be used to represent $P$.
 
-The concept of using alpha shapes to represent a point set was originally presented in ~\cite{edelsbrunner1983}. A convex hull is a generalization of an alpha shape; all convex hulls are alpha shapes but not all alpha shapes are convex hulls. By adjusting a single parameter $\alpha$ a family of shapes associated with a finite set of points can be obtained.
+The boundary of the $\alpha$-shape is a subset of the Delaunay triangulation of points $P$. The Delaunay triangulation $T$ of $P$ is the a triangulation where the circumsphere of each d-simplex $t \epsilon T$ is empty, i.e. there are no  $p \epsilon P$ inside the circumsphere. This is the dual graph of the Voronoi diagram. The $\alpha$-shape is equivalent to the union of all $t \epsilon T$ s.t. the circumsphere of d-simplex $t \leq \alpha$. 
 
-Alpha shapes are closely associated with the Delaunay triangulation of a set of points, with the boundary of the alpha shape being a subset of the Delaunay triangulation. The alpha shape consists of all simplices in the Delaunay triangulation such that the radius of the simplex circumsphere is not greater than $ \alpha $. For the two extremes, $ \alpha=\inf $ gives the convex hull and  $ \alpha=0 $ gives the point set. 
+The lung shape is approximately convex along the pleural surface, so the convex hull of the initial mask gives a good estimate of the boundary for this surface.
+ However, regions near mediastinum and diaphragm are not convex resulting in over over. Using alpha shapes we were able to elegantly obtain a family of shapes representing the initial mask. 
 
-Our goal is to find the alpha shape of the initial lung mask that includes the tumor region. First we obtain a set of points representing the initial mask. The convex hull, or alpha shape with $ \alpha = \inf $, of the initial mask includes the tumor region however it also over segments non convex regions on the lung such as the mediastinum and diaphragm. By reducing alpha we can exclude most of the over segmentation near mediastinum and diaphragm. If alpha is too small, the tumor region is excluded. Figure ~\ref{fig:alphashapes} shows the alpha shape of the initial mask for different values of alpha. 
+
+Our goal is to find the alpha shape of the initial lung mask that includes the tumor region. First we obtain a set of points representing the initial mask. The convex hull, or alpha shape with $ \alpha = \infty $, of the initial mask includes the tumor region however it also over segments non convex regions on the lung such as the mediastinum and diaphragm. By reducing alpha we can exclude most of the over segmentation near mediastinum and diaphragm. If alpha is too small, the tumor region is excluded. Figure ~\ref{fig:alphashapes} shows the alpha shape of the initial mask for different values of alpha. 
 
 %
 % http://texblog.org/2007/08/28/placing-figurestables-side-by-side-subfigure/
@@ -181,7 +184,7 @@ Institutional Review Board
 (IRB ZZZZZZZZZ).
 All images were resampled to obtain $1\times{}1\times{}1$ mm$^3$ voxels. Subjects were chosen that had at least one large tumor. 
 
-Out method was evaluated by comparing to ground truth segmentations done by an expert using MimVista 6.4.7 software. The DICE coefficient was used for a metric of volume overlap. Additionally, the average unsigned symmetric surface distance was used to measure the distance between the segmentation boundaries. The analysis was performed on both left and right lungs of all subjects. Additionally, we repeated the analysis with only considering the lung containing the tumor.
+Out method was evaluated by comparing to ground truth segmentations generated by a radiation therapy physicist using the MimVista 6.4.7 software (MIM Software, Cleveland, OH). The DICE coefficient was used for a metric of volume overlap. Additionally, the average unsigned symmetric surface distance was used to measure the distance between the segmentation boundaries. The analysis was performed on both left and right lungs of all subjects. Additionally, we repeated the analysis with only considering the lung containing the tumor.
 
 
 The proposed method was implemented using the jupyter notebook \cite{PER-GRA:2007} rapid prototyping environment,  algorithms from ITK\cite{johnson2015itk} python wrapped in SimpleITK \cite{10.3389/fninf.2013.00045} in coordination with vtkDelaunay3D from VTK (www.vtk.org).
@@ -190,9 +193,10 @@ The proposed method was implemented using the jupyter notebook \cite{PER-GRA:200
 %
 \section{Results}
 %
+
 Figure ~\ref{fig:resultseg} shows the final segmentation for four subjects. 
 \todo[author=HJ,inline]{Hard to see blue contour, ask Prof. Johnson if we can make contour thicker in Slicer.}
-\todo[author=SG,inline]{Maybe show result at each step for each subject and remove other figure that shows each step for one subject}
+
 \begin{figure}[t]
   \centering
     \subfigure[]{
@@ -229,11 +233,11 @@ Figure ~\ref{fig:resultseg} shows the final segmentation for four subjects.
     }
     \subfigure[]{
     \includegraphics[width=1in]{figs/PFS-020_final}
-    \label{fig:PFS-031_final}
+    \label{fig:PFS-020_final}
     }\\
     \subfigure[]{
     \includegraphics[width=1in]{figs/PFS-031_pass}
-    \label{fig:PFS-03_pass}
+    \label{fig:PFS-031_pass}
     }
     \subfigure[]{
     \includegraphics[width=1in]{figs/PFS-031_alpha}
@@ -252,14 +256,14 @@ Figure ~\ref{fig:dice} and ~\ref{fig:dist} shows DICE coefficient and average un
 \begin{figure}[t]
   \centering
     \includegraphics[width=4.5in]{figs/dice}
-  \caption{DICE coefficient for all subjects. "T" indicates lungs with tumors.}
+  \caption{DICE coefficient for all subjects. "o" indicates lungs with tumors.}
   \label{fig:dice}
 \end{figure}
 
 \begin{figure}[t]
   \centering
     \includegraphics[width=4.5in]{figs/distUnsignSym}
-  \caption{Average unsigned symmetric surface distance for all subjects. "T" indicates lungs with tumors.}
+  \caption{Average unsigned symmetric surface distance for all subjects. "o" indicates lungs with tumors.}
   \label{fig:dist}
 \end{figure}
 
@@ -337,9 +341,9 @@ Figure ~\ref{fig:steps} shows the resulting segmentation at each step of the met
 \section{Discussion}
 %
 
-The method shows good results with a DICE coefficient of 0.970 and average unsigned symmetric surface distance of 0.809 mm for all subjects. This surface distance is on the sub-voxel level. Additionally, we split the lungs into tumor and non-tumor groups. The DICE coefficient was 0.967 and 0.971 for tumor and non-tumor groups, respectively. The unsigned symmetric surface distance was 0.826 mm and 0.794 mm for tumor and non-tumor groups, respectively.
+The method shows good results with a DICE coefficient of 0.970 and average unsigned symmetric surface distance of 0.809 mm for all subjects. This surface distance is on the sub-voxel level. Additionally, we split the lungs into tumor and non-tumor groups. The DICE coefficient was 0.967 and 0.971 for tumor and non-tumor groups, respectively. The unsigned symmetric surface distance was 0.826 mm and 0.794 mm for tumor and non-tumor groups, respectively. A t-test was performed to compare the surface distance error for lungs with tumors and lungs without tumors and no significant difference was found (p-value = 0.540).
 
-The experiments were run on a Linux machine with an Intel Xeon 2.27 GHz CPU and 48 GB of RAM. Generating the alpha shape and the graph search takes XXX and XXX minutes of computer time, respectively. The manual segmentation took on average XXX per lung.
+The experiments were run on a Linux machine with an Intel Xeon 2.27 GHz CPU and 48 GB of RAM. Generating the alpha shape and the graph search takes XXX and XXX minutes of computer time, respectively. The manual segmentation took on average 53 minutes per subject.
 
 Our future directions involve learning the optimal alpha for a given subject rather than using the same alpha for all subject. Additionally, we plan to experiment with learning a spatially varying alpha to overcome over segmentation near the aorta.
 %
