@@ -84,7 +84,7 @@ First we obtain intensity based segmentation of the lungs using PASS software ~\
 \subsection{Alpha Shapes}
 %
 \todo[author=SG,inline]{Make this section better}
-Using our prior knowledge that the lung shape is approximately convex along the ribcage, we observed that taking the convex hull of the initial mask gives a shape that includes large tumors. However, the convex hull over segments the lung in non convex regions such as the mediastinum and diaphragm. Using alpha shapes we were able to elegantly obtain a family of shapes representing the initial mask. 
+Using our prior knowledge that the lung shape is approximately convex along pleural surface, we observed that taking the convex hull of the initial mask gives a shape that includes large tumors. However, the convex hull of the inital mask also includes non lung tissue regions near the mediastinum and diaphragm. Using alpha shapes we were able to elegantly obtain a family of shapes representing the initial mask. 
 
 The concept of using alpha shapes to represent a point set was originally presented in ~\cite{edelsbrunner1983}. A convex hull is a generalization of an alpha shape; all convex hulls are alpha shapes but not all alpha shapes are convex hulls. By adjusting a single parameter $\alpha$ a family of shapes associated with a finite set of points can be obtained.
 
@@ -165,10 +165,9 @@ Our goal is to find the alpha shape of the initial lung mask that includes the t
 %
 \subsection{Graph Search}
 %
-\todo[author=SG,inline]{Add brief description of OSF}
 The alpha shape generally over segments the mediastinum as a result of the non-convex shape. This could be eliminated by reducing $\alpha$, however then we way remove tumor regions as well. To reduce the mediastinum over segmentation, we use a graph search framework. The method will only briefly be described here, see~\cite{li2006} for a detailed description of the method. 
 
-The graph search requires a shape prior, here we use the alpha shape from the previous step as the shape prior. A graph consisting of nodes and edges is built in a margin around the shape prior. The nodes have an associated cost reflecting the unlikeliness that it belongs to the lung surface. We use the inverse gradient of the CT image for the cost, as the lung surface has a high image gradient. Edges are used to enforce smoothness constraints, or how much the topology of the resulting segmentation can deviate from the shape prior. The globally optimal surface is obtained by using a maximum flow algorithm on a closely derived graph. 
+The graph search method requires a shape prior, here we use the alpha shape from the previous step as the shape prior. A graph $G(E,V)$ consisting of node set $V$ and edge set $E$ is built in a margin around the shape prior. The nodes have an associated cost reflecting the unlikeliness that it belongs to the lung surface. We use the inverse gradient of the CT image for the cost, as the lung surface has a high image gradient. Edges are used to enforce smoothness constraints, or how much the topology of the resulting segmentation can deviate from the shape prior. The globally optimal surface is obtained by using a maximum flow algorithm on a closely derived graph. 
  
 
 %
@@ -196,23 +195,56 @@ Figure ~\ref{fig:resultseg} shows the final segmentation for four subjects.
 \todo[author=SG,inline]{Maybe show result at each step for each subject and remove other figure that shows each step for one subject}
 \begin{figure}[t]
   \centering
-    \subfigure[PFS-031]{
-    \includegraphics[width=2in]{figs/result1}
-    \label{fig:result1}
+    \subfigure[]{
+    \includegraphics[width=1in]{figs/PFS-002_pass}
+    \label{fig:PFS-002_pass}
     }
-    \subfigure[PFS-032]{
-    \includegraphics[width=2in]{figs/result2}
-    \label{fig:result2}
+    \subfigure[]{
+    \includegraphics[width=1in]{figs/PFS-002_alpha}
+    \label{fig:PFS-002_alpha}
     }
-    \subfigure[PFS-011]{
-    \includegraphics[width=2in]{figs/result3}
-    \label{fig:result3}
+    \subfigure[]{
+    \includegraphics[width=1in]{figs/PFS-002_final}
+    \label{fig:PFS-002_final}
+    }\\
+    \subfigure[]{
+    \includegraphics[width=1in]{figs/PFS-011_pass}
+    \label{fig:PFS-011_pass}
     }
-    \subfigure[PFS-020]{
-    \includegraphics[width=2in]{figs/result4}
-    \label{fig:result4}
+    \subfigure[]{
+    \includegraphics[width=1in]{figs/PFS-011_alpha}
+    \label{fig:PFS-011_alpha}
     }
-  \caption{Result for four subjects. Red fill indicates our result, blue contour represents manual segmentation.}
+    \subfigure[]{
+    \includegraphics[width=1in]{figs/PFS-011_final}
+    \label{fig:PFS-011_final}
+    }\\
+    \subfigure[]{
+    \includegraphics[width=1in]{figs/PFS-020_pass}
+    \label{fig:PFS-020_pass}
+    }
+    \subfigure[]{
+    \includegraphics[width=1in]{figs/PFS-020_alpha}
+    \label{fig:PFS-020_alpha}
+    }
+    \subfigure[]{
+    \includegraphics[width=1in]{figs/PFS-020_final}
+    \label{fig:PFS-031_final}
+    }\\
+    \subfigure[]{
+    \includegraphics[width=1in]{figs/PFS-031_pass}
+    \label{fig:PFS-03_pass}
+    }
+    \subfigure[]{
+    \includegraphics[width=1in]{figs/PFS-031_alpha}
+    \label{fig:PFS-031_alpha}
+    }
+    \subfigure[]{
+    \includegraphics[width=1in]{figs/PFS-031_final}
+    \label{fig:PFS-031_final}
+    }
+
+  \caption{Result for four subjects. First column shows the initial mask. Second column shows the alpha shape of the initial mask. The third column shows the final result in red along with the manual segmentation outlined in blue}
   \label{fig:resultseg}
 \end{figure}
 
@@ -273,7 +305,9 @@ Table ~\ref{tab:results} shows the DICE coefficient and surface distance for lef
 \end{table}
 \fi
 
+\iffalse
 Figure ~\ref{fig:steps} shows the resulting segmentation at each step of the method for one subject.
+
 
 
 \begin{figure}[t]
@@ -293,7 +327,7 @@ Figure ~\ref{fig:steps} shows the resulting segmentation at each step of the met
   \caption{Result after each step of the proposed method.}
   \label{fig:steps}
 \end{figure}
-
+\fi
 
 
 
@@ -311,7 +345,7 @@ Our future directions involve learning the optimal alpha for a given subject rat
 %
 \section{Summary}
 %
-We proposed a method for segmentation of lungs in the presence of large tumors. The method is utilizes an intensity based segmentation, alpha shapes, and a graph search. A DICE coefficient of XXX and a surface distance of XXX were achieved. The accurate lung segmentation with  inclusion of tumor regions is valuable for radiation therapy treatment planning and further quantitative analysis.
+We proposed a method for segmentation of lungs in the presence of large tumors. The method is utilizes an intensity based segmentation, alpha shapes, and a graph search framework. A DICE coefficient of 0.970 and a surface distance of 0.809 mm were achieved. The accurate lung segmentation with  inclusion of tumor regions is valuable for radiation therapy treatment planning and further quantitative analysis.
 %
 \section{Acknowledgments}
 %
