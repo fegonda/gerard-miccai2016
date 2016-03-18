@@ -14,6 +14,7 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{amssymb}
+\usepackage{color}
 
 % http://mirror.utexas.edu/ctan/obsolete/macros/latex/contrib/subfigure/subfigure.pdf
 \usepackage[tight]{subfigure}
@@ -33,25 +34,23 @@
 
 \mainmatter              % start of the contributions
 %
-\todo[author=SG,inline]{Change title and running title}
 \title{Lung Segmentation via Alpha Shapes in the Presence of Large Tumors}
 %
 \titlerunning{Alpha Shape Lung Segmentation}  % abbreviated title (for running head)
 %                                     also used for the TOC unless
 %                                     \toctitle is used
 %
-\todo[author=All, inline]{\\citep command available for parenthesis citation with natbib}
-\todo[author=SG, inline]{Make anonymous}
-%\author{I.M. Anonymous\inst{1}
-%\and U.R. Anonymous\inst{2}}
-\author{
-Sarah E. Gerard\inst{1,3} \and
-Hans J. Johnson\inst{1,3} \and
-John E. Bayouth\inst{2} \and\\
-Kaifang Du\inst{2} \and
-Junfeng Guo\inst{1,3} \and
-Joseph M. Reinhardt\inst{1,3}
+\author{I.M. Anonymous\inst{1}\\
+\and U.R. Anonymous\inst{2}
 }
+%\author{
+%Sarah E. Gerard\inst{1,3} \and
+%Hans J. Johnson\inst{1,3} \and
+%John E. Bayouth\inst{2} \and\\
+%Kaifang Du\inst{2} \and
+%Junfeng Guo\inst{1,3} \and
+%Joseph M. Reinhardt\inst{1,3}
+%}
 %
 \authorrunning{Sarah E. Gerard et al.} % abbreviated author list (for running head)
 %
@@ -63,28 +62,29 @@ Nowhere \and
 Noplace \and
 Nowhere 
 }
-\institute{
-University of Iowa, USA 
-\and University of Wisconsin-Madison, USA
-\and Iowa Institute for Biomedical Imaging 
-}
+%\institute{
+%University of Iowa, USA 
+%\and University of Wisconsin-Madison, USA
+%\and Iowa Institute for Biomedical Imaging 
+%}
 
 
 \maketitle              % typeset the title of the contribution
 
-\begin{abstract}
-Lung segmentation is a critical initial step in planning radiation therapy interventions for lung cancer patients. However, automatic segmentation of lungs with large tumors is a challenging task due to the large variation in both lung and tumor shape between subjects. We present an automatic method to segment lungs with large tumors in CT images using an initial intensity based segmentation followed by alpha shape construction and graph search. We evaluated our method on twelve subjects. Compared to manual segmentations, we obtained an average DICE coefficient of 0.970 and an average surface distance of 0.809 mm. The results show that our method is able to accurately include large tumors. The method can also be performed on lungs without tumors. 
+\todo[author=SG]{You are not doing just "lung segmentation" it is "lung cavity segmentation" that includes both lung tissue and included tumors.  Can you clarify this in the abstract to make more clear that you are capturing BOTH lung and included tumors?}
 
-\keywords{segmentation, alpha shape, radiation therapy}
+\begin{abstract}
+\textcolor{red}{Lung segmentation} is a critical initial step in planning radiation therapy interventions for lung cancer patients. Achieving robust automatic segmentation of lungs with large tumors is challenging due to large variations in lung morphology, tumor location, and tumor shape between subjects. We present an automatic method to \textcolor{red}{segment lungs} with large tumors in CT images using an initial intensity based segmentation followed by alpha shape construction and graph search. We evaluated our method by comparing automated segmentations to manual segmentations on twelve subjects. Computed metrics for segmentation quality include average surface distance of 0.727 and average DICE coefficient of 0.970. These results demonstrate that the proposed method accurately segments the entire lung regions both absent of and in the presence of large tumors. 
+\keywords{segmentation, alpha shape, lung, radiation therapy}
 \end{abstract}
 %
 \section{Introduction}
 %
 Radiation therapy interventions of lung cancer patients involve acquiring a thoracic CT scan to assess the disease state and to design a patient specific treatment plan. Typically a respiratory correlated scan, or 4D CT, is also acquired prior to treatment. This produces a huge amount of data, requiring automatic computer-aided methods for further analysis. Accurate delineation of the lungs is a critical initial first step for treatment planning and quantitative analysis.
 
-Normal lungs have high contrast with the surrounding anatomy, making lung segmentation relatively trivial using thresholding based methods~\cite{guo2008,hu2001}. However, in the presence of large tumors, conventional threshold based methods fail because the readiodense tumors are excluded from the segmentation. 
+Normal lung tissue has high contrast with the surrounding anatomy, making lung segmentation relatively robust using simple thresholding based methods~\cite{guo2008,hu2001}. However, in the presence of large tumors, conventional threshold based methods fail due to the radiodense tumors are excluded from the segmentation. An accurate lung tissue segmentation is required during radiation therapy planning, e.g., to predict the dose delivered to the normal lung tissue and the tumor. 
 
-Several approaches have been used to segment pathological lungs. Statistical shape models are able to capture the major modes of lung shape variation in a training set and then build a lung model~\cite{sofka2011,sun2012}. This method requires a large training set with annotated corresponding landmark points. Additionally, the training set is limited to a subset of possible lung shape variations and thus it could fail on cases that are not represented in the training set. Segmentation by registration methods~\cite{sluimer2005,vanrikxoort2009} make use an atlas or multiple atlases with ground truth segmentations. The atlas segmentation is mapped to a test case using image registration. For good results, a time consuming registration is needed. Recently, machine learning based methods have been proposed to classify pathological lung tissue~\cite{mansoor2014,song2012}
+Several approaches have been used to segment pathological lungs. Statistical shape models (SSM) have bee used to capture the major modes of lung shape variation in a training set used to build a lung model~\cite{sofka2011,sun2012}. The SSM method, however, requires a large training set with annotated manually identified corresponding landmark points. Additionally, the SSM training set is limited to a subset of possible lung shape variations and thus it often fails on cases that are not represented in the training set. Segmentation by registration methods~\cite{sluimer2005,vanrikxoort2009} make use an atlas or multiple atlases with ground truth segmentations. The atlas segmentation is mapped to a test case using image registration. Atlas based segmentations require prohibitively time consuming registration to get adequate results. Recently, machine learning based methods have been proposed to classify pathological lung tissue~\cite{mansoor2014,song2012}
 
 In this paper we propose an alpha shape approach for inclusion of large tumors in lung segmentations. The concept of using alpha shapes to represent a point set was originally presented in~\cite{edelsbrunner1983}. In~\cite{stelldinger2006}, alpha shapes were used for boundary reconstruction of shapes in 2D images. In~\cite{cerrolaza2015} alpha shapes were used to generate patient specific maps for renal segmentation in 3D ultrasound images. To the best of our knowledge, this is the first time that alpha shapes have been applied to the problem of lung segmentation. 
 
@@ -97,20 +97,47 @@ The proposed method has three main steps: an initial intensity based segmentatio
 \subsection{Initial Segmentation}
 %
 
-First, we obtain intensity based segmentation of the lungs using the PASS software~\cite{guo2008}. This method consists of three main steps: extraction of lungs using optimal thresholding, separation of the right and left lungs, and optimal smoothing to smooth the lung boundaries. This gives a lung mask for both left and right lung, however large tumors are not included in the segmentation. We will refer to this result as the initial mask. The next steps will process initial masks for the left and right lung separately. 
+First, we obtain intensity based segmentation of the lungs using the PASS software~\cite{guo2008}. This method consists of three main steps: extraction of lungs using optimal thresholding, separation of the right and left lungs, and optimal smoothing to smooth the lung boundaries. This gives separate masks for both left and right normal lung tissue lung, however large tumors are not included in the segmentation. We will refer to this result as the initial mask. The next steps will process initial masks for the left and right lung separately. 
 %
 \subsection{Alpha Shapes}
 %
- Given a finite set of points $P \epsilon \mathbb{R}^n$ and $ 0 \leq \alpha \leq \infty $, an $\alpha$-shape can be used to represent the shape of $P$. If $\alpha = \infty$, the $\alpha$-shape is equivalent to the convex hull of $P$. For decreasing $\alpha$, the $\alpha$-shape size gradually decreases until only $P$ remains at $\alpha=0$. \todo[author=SG,inline]{Fix wording in last sentence.}
+ Given a finite set of points $P \in \mathbb{R}^n$ and $ 0 \leq \alpha \leq \infty $, an $\alpha$-shape is one way to represent the shape of $P$. If $\alpha = \infty$, the $\alpha$-shape is equivalent to the convex hull of $P$. A family of shapes can be obtained by varying $\alpha$; as $\alpha$ decreases the $\alpha$-shape gradually becomes more constricted to a tighter fit around $P$.
 
-The Delaunay triangulation of a point set can be used to calculate the $\alpha$ -shape.  The Delaunay triangulation $T$ of a set of points $P$ is the triangulation that maximizes the minimum angle of each of each d-simplex $t \epsilon T$. Note: in 2D and 3D the d-simplices are triangles and tetrahedrons, respectively. This Delaunay triangulation is the dual graph of the Voronoi diagram. The $\alpha$-shape is a subset of the Delaunay triangulation, it is the union of all d-simplices $t \epsilon T$ s.t. the circumsphere radius of $t \leq \alpha$. 
+The Delaunay triangulation of a point set can be used to calculate the $\alpha$ -shape.  The Delaunay triangulation of a point set $DT(P)$ is the triangulation that maximizes the minimum angle of each d-simplex $t \in DT(P)$. Note: in 2D and 3D the d-simplices $t$ are triangles and tetrahedrons, respectively. The Delaunay triangulation is the dual graph of the Voronoi diagram of $P$. The $\alpha$-shape consists of a subset of d-simplices $t \in DT(P)$, it is the shape formed by the union of d-simplices $t \in DT(P)$ with circumsphere radius $R_c(t) \leq \alpha$. 
+
+\begin{figure}[ht!]
+  \centering
+  \subfigure[]{
+  \includegraphics[width=0.8in, height=0.8in]{figs/tris_5}
+  \label{fig:tris_5}
+  }
+  \subfigure[]{
+  \includegraphics[width=0.8in, height=0.8in]{figs/tris_6}
+  \label{fig:tris_6}
+  }
+  \subfigure[]{
+  \includegraphics[width=0.8in, height=0.8in]{figs/tris_8}
+  \label{fig:tris_8}
+  }
+  \subfigure[]{
+  \includegraphics[width=0.8in, height=0.8in]{figs/tris_10}
+  \label{fig:tris_10}
+  }
+  \subfigure[]{
+  \includegraphics[width=0.8in, height=0.8in]{figs/tris_13}
+  \label{fig:tris_13}
+  }
+  \caption{Simple example showing Delaunay triangulation and $\alpha$-shape calculation. The red circles are the point set.~\ref{fig:tris_5}-~\ref{fig:tris_13} show the Delaunay triangles that make up the $alpha$-shape for decreasing values of $\alpha$.~\ref{fig:tris_5} at $\alpha=\infty$ is equivalent to the Delaunay triangulation. As $\alpha$ decreases, triangles are removed that have a circumcircle with radius greater than $\alpha$. The $\alpha$-shape is the union of all triangles.}
+  \label{fig:star}
+\end{figure}
 
 The lung shape is approximately convex along the pleural surface, so the convex hull of the initial mask gives a good estimate of the boundary for this surface, even in presence of large chest wall tumors. However, the mediastinum and diaphragm regions are not convex so the convex hull oversegments these regions. $\alpha$-shapes allow us to elegantly obtain a family of shapes that smoothly interpolates between the convex hull and initial mask to represent the lung shape. 
 
 
-As the $\alpha$-shape is defined on a point set, rather than an image, first we obtain a set of points $p \epsilon P$ representing the initial mask. We could use the physical locations of all image voxels in the mask as our point set, however for time efficiency we chose to only take a sample of these voxels. We performed image erosion and subtraction operations to generate a set of concentric contours of the initial mask and used these voxel locations for $P$. \todo[author=SG,inline]{Equation?.}
+As the $\alpha$-shape is defined on a point set, rather than an image, first we obtain a set of points $p \in P$ representing the initial mask. We could use the physical locations of all image voxels in the mask as our point set, however for time efficiency we chose to only take a sample of these voxels. We performed image erosion and subtraction operations to generate a set of concentric contours of the initial mask and used these voxel locations for $P$. To ensure all of the initial mask is included in the $\alpha$-shape, the separation between concentric contours needs to be small enough such that the d-simplices formed between contours have a circumradius smaller than $\alpha$. 
 
-There is a tradeoff between over segmentation and under segmentation when choosing alpha. When $\alpha$ is too large, the medaistinum is over segmented, however decreasing $\alpha$ too much can remove tumors (Figure~\ref{fig:alphashapes}).  We experimented with different values of $\alpha$ to obtain lung shapes the included tumor regions and minimized oversegmentation near the diagram and mediastinum. The diaphragm is easily removed due to the broad concave structure, however the mediastinum has many very small concavities resulting in minor oversegmentation that cannot be removed without removing the tumor. We empirically determined $ \alpha=25 $ to give good results for all subjects. Prior to the next step, we performed Laplacian smoothing \todo[author=SG,inline]{Reference or describe}on the alpha shape surface to remove sharp edges. 
+
+There is a trade off between over segmentation and under segmentation when choosing $\alpha$. When $\alpha$ is too large, the mediastinum is over segmented, however decreasing $\alpha$ too much can remove tumors (Figure~\ref{fig:alphashapes}).  We experimented with different values of $\alpha$ to obtain lung shapes the included tumor regions and minimized oversegmentation near the diaphragm and mediastinum. The diaphragm is easily removed due to the broad concave structure, however the mediastinum has many very small concavities resulting in minor oversegmentation that cannot be removed without removing the tumor. We empirically determined $ \alpha=25 $ to give good results for all subjects in this study. Prior to the next step, we performed Laplacian smoothing~\cite{herrmann1976} on the alpha shape surface to remove sharp edges. 
 
 %
 % http://texblog.org/2007/08/28/placing-figurestables-side-by-side-subfigure/
@@ -149,7 +176,7 @@ There is a tradeoff between over segmentation and under segmentation when choosi
   \includegraphics[trim={150 100 150 100},clip,width=1.0in]{figs/tris_15}
   \label{fig:tris_alpha_15}
   }
-  \caption{~\ref{fig:tris_CT} CT image, ~\ref{fig:tris_Mask} initial mask, ~\ref{fig:tris_points} point set used to represent initial mask obtained by thresholding, ~\ref{fig:tris_alpha_200} - ~\ref{fig:tris_alpha_15} Delaunay triangles that form the alpha shape for decreasing alpha values. Note: this is a 2D example for illustrative purposes; the actual method is performed in 3D with tetrahedrons instead of triangles. }
+  \caption{~\ref{fig:tris_CT} CT image showing large radiodense tumor in right lung, ~\ref{fig:tris_Mask} initial mask produced by thresholding, ~\ref{fig:tris_points} point set used to represent initial mask,~\ref{fig:tris_alpha_200}-~\ref{fig:tris_alpha_15} Delaunay triangles that form the alpha shape for decreasing alpha values. Note: this is a 2D example for illustrative purposes; the actual method is performed in 3D with tetrahedrons instead of triangles. }
   \label{fig:tris}
 \end{figure}
 
@@ -157,18 +184,18 @@ There is a tradeoff between over segmentation and under segmentation when choosi
 \begin{figure}[t]
   \centering
     \subfigure[$\alpha = 200$]{
-    \includegraphics[trim={200 5 200 5},clip, width=1.3in]{figs/alpha200} 
+    \includegraphics[trim={100 5 100 5},clip, width=1.3in]{figs/alpha_inf} 
     \label{fig:img_alpha200}
     }
     \subfigure[$\alpha = 25$]{
-    \includegraphics[trim={200 5 200 5},clip, width=1.3in]{figs/alpha25}
+    \includegraphics[trim={100 5 100 5},clip, width=1.3in]{figs/alpha_seg}
     \label{fig:img_alpha25}
     }
     \subfigure[$\alpha = 9$]{
-    \includegraphics[trim={200 5 200 5},clip, width=1.3in]{figs/alpha9} 
+    \includegraphics[trim={100 5 100 5},clip, width=1.3in]{figs/alpha_zero} 
     \label{fig:img_alpha9}
     }
-  \caption{Alpha shape of initial mask for different values of $\alpha$. ~\ref{fig:img_alpha200} is approximately equal to the convex hull, ~\ref{fig:img_alpha9} is approximately equal to the initial mask.}
+  \caption{Alpha shape of initial mask for different values of $\alpha$.~\ref{fig:img_alpha200} is approximately equal to the convex hull of the initial mask,~\ref{fig:img_alpha9} is approximately equal to the initial mask.}
   \label{fig:alphashapes}
 \end{figure}
 %
@@ -190,7 +217,7 @@ XXXXXXXXXXX YYYYYYY
 Institutional Review Board 
 %(IRB 200905703). 
 (IRB ZZZZZZZZZ).
-All images were resampled to obtain $1\times{}1\times{}1$ mm$^3$ voxels. We chose subjects that had a large lung tumor, generally one in either left or right lung.
+All images were resampled from $0.98\times{}0.98\times{}2$ mm$^3$ to obtain $1\times{}1\times{}1$ mm$^3$ isotropic voxels. We chose 11 subjects that had a large lung tumor in either left or right lung, and 1 subject with no lung tumors.
 
 Our method was evaluated by comparing to manual segmentations generated by a radiation therapy physicist using the MimVista 6.4.7 software (MIM Software, Cleveland, OH) following a protocol similar to that used for radiation therapy planning. The DICE coefficient was used for a metric of volume overlap, and the average unsigned symmetric surface distance was used to measure the distance between the lung boundaries. The analysis was performed on both the left and right lungs of all subjects. Additionally, we compared the results of lungs with and without tumors.
 
@@ -201,76 +228,109 @@ The proposed method was implemented using the jupyter notebook~\cite{PER-GRA:200
 %
 \section{Results}
 %
-Figure~\ref{fig:dice} shows the DICE coefficients and and Figure~\ref{fig:dist} shows the average unsigned symmetric surface distances for the left and right lungs of all subjects.
-\begin{figure}[t]
-  \centering
-    \includegraphics[width=3.5in]{figs/dice}
-  \caption{DICE coefficient for all subjects. "o" indicates lungs with tumors.}
-  \label{fig:dice}
-\end{figure}
-
-\begin{figure}[t]
-  \centering
-    \includegraphics[width=3.5in]{figs/distUnsignSym}
-  \caption{Average unsigned symmetric surface distances between automatic method and manual segmentation for all subjects. 'o' indicates lungs with tumors.}
-  \label{fig:dist}
-\end{figure}
-
-Figure~\ref{fig:resultseg} shows the final segmentation for four subjects. 
-\todo[author=SG,inline]{Add 4th column with manual segmentation.}
-
+Figure~\ref{fig:dist} shows the average unsigned surface distances for the initial mask and our final segmentation for both tumor and non-tumor groups. Figure~\ref{fig:resultseg} shows the result at each step of the proposed method and the manual segmentation. 
 \begin{figure}[ht!]
   \centering
     \subfigure[]{
-    \includegraphics[trim={50 0 100 0}, clip, width=0.85in]{figs/PFS-002_pass}
+    \includegraphics[width=2.2in]{figs/dist_tumor}
+    \label{fig:dist_tumor}
+    }
+    \subfigure[]{
+    \includegraphics[width=2.2in]{figs/dist_nontumor}
+    \label{fig:dist_nontumor}
+    }
+  \caption{Average unsigned surface distances for both the initial mask and our final result compared to the manual segmentation.~\ref{fig:dist_tumor} and~\ref{fig:dist_nontumor} show results for lungs with and without tumors, respectively.}
+  \label{fig:dist}
+\end{figure}
+
+\begin{figure}[ht!]
+  \centering
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-002_ct}
+    \label{fig:PFS-002_ct}
+    }
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-020_ct}
+    \label{fig:PFS-020_ct}
+    }
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-031_ct}
+    \label{fig:PFS-031_ct}
+    }
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-032_ct}
+    \label{fig:PFS-032_ct}
+    }\\
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-002_pass}
     \label{fig:PFS-002_pass}
     }
-    \subfigure[]{
-    \includegraphics[trim={50 0 100 0}, clip, width=0.85in]{figs/PFS-002_alpha}
-    \label{fig:PFS-002_alpha}
-    }
-    \subfigure[]{
-    \includegraphics[trim={50 0 100 0}, clip, width=0.85in]{figs/PFS-002_final}
-    \label{fig:PFS-002_final}
-    }\\
-    \subfigure[]{
-    \includegraphics[width=0.85in]{figs/PFS-032_pass}
-    \label{fig:PFS-032_pass}
-    }
-    \subfigure[]{
-    \includegraphics[width=0.85in]{figs/PFS-032_alpha}
-    \label{fig:PFS-032_alpha}
-    }
-    \subfigure[]{
-    \includegraphics[width=0.85in]{figs/PFS-032_final}
-    \label{fig:PFS-032_final}
-    }\\
-    \subfigure[]{
-    \includegraphics[width=0.85in]{figs/PFS-020_pass}
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-020_pass}
     \label{fig:PFS-020_pass}
     }
-    \subfigure[]{
-    \includegraphics[width=0.85in]{figs/PFS-020_alpha}
-    \label{fig:PFS-020_alpha}
-    }
-    \subfigure[]{
-    \includegraphics[width=0.85in]{figs/PFS-020_final}
-    \label{fig:PFS-020_final}
-    }\\
-    \subfigure[]{
-    \includegraphics[trim={200 0 0 0}, clip, width=0.85in]{figs/PFS-031_pass}
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-031_pass}
     \label{fig:PFS-031_pass}
     }
-    \subfigure[]{
-    \includegraphics[trim={200 0 0 0}, clip, width=0.85in]{figs/PFS-031_alpha}
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-032_pass}
+    \label{fig:PFS-032_pass}
+    }\\
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-002_alpha}
+    \label{fig:PFS-002_alpha}
+    }
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-020_alpha}
+    \label{fig:PFS-020_alpha}
+    }
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-031_alpha}
     \label{fig:PFS-031_alpha}
     }
-    \subfigure[]{
-    \includegraphics[trim={200 0 0 0}, clip, width=0.85in]{figs/PFS-031_final}
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-032_alpha}
+    \label{fig:PFS-032_alpha}
+    }\\
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-002_final}
+    \label{fig:PFS-002_final}
+    }
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-020_final}
+    \label{fig:PFS-020_final}
+    }
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-031_final}
     \label{fig:PFS-031_final}
     }
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-032_final}
+    \label{fig:PFS-032_final}
+    }\\
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-002_manual}
+    \label{fig:PFS-002_manual}
+    }
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-020_manual}
+    \label{fig:PFS-020_manual}
+    }
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-031_manual}
+    \label{fig:PFS-031_manual}
+    }
+    \subfigure{
+    \includegraphics[width=1.08in]{figs/PFS-032_manual}
+    \label{fig:PFS-032_manual}
+    }\\
 
-  \caption{Result for four subjects. First column shows the initial mask. Second column shows the alpha shape of the initial mask. The third column shows the final result in red along with the manual segmentation outlined in blue}
+    
+    
+
+  \caption{Segmentation at each step of the proposed method for
+  four different data sets displayed in columns one to four. Row 1: CT image. Row 2: initial mask. Row 3: alpha shape of the initial mask. Row 4: final segmentation using the proposed automatic method. Row 5: manual segmentation.}
   \label{fig:resultseg}
 \end{figure}
 
@@ -281,17 +341,17 @@ Figure~\ref{fig:resultseg} shows the final segmentation for four subjects.
 \section{Discussion}
 %
 
-The method shows good results with a DICE coefficient of 0.970 and average unsigned symmetric surface distance of 0.809 mm for all subjects. This surface distance is on the sub-voxel level. Additionally, we split the lungs into tumor and non-tumor groups. The DICE coefficient was 0.967 and 0.971 for tumor and non-tumor groups, respectively. The unsigned symmetric surface distance was 0.826 mm and 0.794 mm for tumor and non-tumor groups, respectively. A t-test was performed to compare the surface distance error for lungs with tumors and lungs without tumors and no significant difference was found (p-value = 0.540).
+The method shows good results with an average unsigned surface distance of 0.727 mm and an average DICE coefficient of 0.970 for all subjects. This surface distance is on the sub-voxel level. Additionally, we split the lungs into tumor and non-tumor groups. The DICE coefficient was 0.967 and 0.971 for tumor and non-tumor groups, respectively. The average unsigned surface distance was 0.758 mm and 0.702 mm for tumor and non-tumor groups, respectively. A t-test was performed to compare the surface distance error for lungs with tumors and lungs without tumors and no significant difference was found (p-value = 0.314). The surface distance for the initial mask was 1.368 mm and 0.710 mm for tumor and non-tumor groups, respectively. These results show that compared to the initial mask, our method significantly improves the average surface distance error for lungs with tumors (p-value 0.0008) and does not significantly change the average surface distance error for lungs without tumors (p-value 0.867).
 
-By visual inspection, it is clear that the majority of discrepancy between our results and the manual segmentations occur at the mediastinum. This is a subjective region to segment, which can be observed on the manual segmentations shown in Figure~\ref{fig:resultseg}. The manual segmentations were done on transverse slices and variation on where the mediastinal boundary was drawn between slices resulted in the boundary not being smooth in 3D. The proposed method produces a smooth mediastinum boundary that is consistent between subjects. 
+By visual inspection, it is clear that the majority of discrepancy between our results and the manual segmentations occur at the mediastinum. This is a subjective region to segment, that can be observed on coronal slices of the manual segmentations. The manual segmentations were done on transverse slices and variation on where the mediastinal boundary was drawn between slices resulted in the boundary not being smooth in 3D. The proposed method produces a smooth mediastinum boundary that is consistent between subjects. 
 
-In future work we plan on learning the optimal $\alpha$ for each subject rather than using the same $\alpha$ for all subjects. Additionally, we plan to experiment with learning a spatially varying alpha to overcome over segmentation near mediastinium.
+In future work we plan on identifying the optimal $\alpha$ for each subject rather than using the same $\alpha$ for all subjects. Additionally, we plan to experiment with automatically identifying a spatially varying alpha to overcome over segmentation near mediastinum.
 
 The experiments were run on a Linux machine with an Intel Xeon 2.27 GHz CPU and 48 GB of RAM. Generating the alpha shape and the graph search take approximately 13 and 1 minute(s) of computer time, respectively. The manual segmentation took on average 53 minutes per subject.
 %
 \section{Summary}
 %
-We proposed a method for segmentation of lungs in the presence of large tumors. The method is utilizes an intensity based segmentation, alpha shapes, and a graph search framework. A DICE coefficient of 0.970 and a surface distance of 0.809 mm were achieved. The accurate lung segmentation with  inclusion of tumor regions is valuable for radiation therapy treatment planning and further quantitative analysis.
+We proposed a method for segmentation of lungs in the presence of large tumors. The method utilizes an intensity based segmentation, alpha shapes correction, and a graph search framework final refinement.An average surface error distance of 0.727 mm and DICE coefficient of 0.970 and  were achieved. The accurate lung segmentation with  inclusion of tumor regions is valuable for radiation therapy treatment planning and further quantitative analysis.
 %
 
 \section{Acknowledgments}
