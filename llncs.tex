@@ -40,32 +40,32 @@
 %                                     also used for the TOC unless
 %                                     \toctitle is used
 %
-\author{I.M. Anonymous\inst{1}\\
-\and U.R. Anonymous\inst{2}
-}
-%\author{
-%Sarah E. Gerard\inst{1,3} \and
-%Hans J. Johnson\inst{1,3} \and
-%John E. Bayouth\inst{2} \and\\
-%Kaifang Du\inst{2} \and
-%Junfeng Guo\inst{1,3} \and
-%Joseph M. Reinhardt\inst{1,3}
+%\author{I.M. Anonymous\inst{1}\\
+%\and U.R. Anonymous\inst{2}
 %}
+\author{
+Sarah E. Gerard\inst{1,3} \and
+Hans J. Johnson\inst{1,3} \and
+John E. Bayouth\inst{2} \and\\
+Kaifang Du\inst{2} \and
+Junfeng Guo\inst{1,3} \and
+Joseph M. Reinhardt\inst{1,3}
+}
 %
 \authorrunning{Sarah E. Gerard et al.} % abbreviated author list (for running head)
 %
 %%%% list of authors for the TOC (use if author list has to be modified)
 \tocauthor{Sarah E. Gerard, Hans J. Johnson, John E. Bayouth, Kaifang Du, Junfeng Guo, Joseph M. Reinhardt}
 %
-\institute{
-Nowhere \and
-Noplace
-}
 %\institute{
-%University of Iowa, USA 
-%\and University of Wisconsin-Madison, USA
-%\and Iowa Institute for Biomedical Imaging 
+%Nowhere \and
+%Noplace
 %}
+\institute{
+University of Iowa, USA 
+\and University of Wisconsin-Madison, USA
+\and Iowa Institute for Biomedical Imaging 
+}
 
 
 \maketitle              % typeset the title of the contribution
@@ -137,7 +137,7 @@ The lung shape is approximately convex along the pleural surface, so the convex 
 As the $\alpha$-shape is defined on a point set, rather than an image, first we obtain a set of points $p \in P$ representing the initial mask. We could use the physical locations of all image voxels in the mask as our point set, however for time efficiency we chose to only take a sample of these voxels. We performed image erosion and subtraction operations to generate a set of concentric contours of the initial mask and used these voxel locations for $P$. To ensure all of the initial mask is included in the $\alpha$-shape, the separation between concentric contours needs to be small enough such that the d-simplices formed between contours have a circumradius smaller than $\alpha$. 
 
 
-There is a trade off between oversegmentation and undersegmentation when choosing $\alpha$. If $\alpha$ is too large, the mediastinum is oversegmented, however decreasing $\alpha$ too much can remove tumors (Figure~\ref{fig:alphashapes}).  We experimented with different values of $\alpha$ to obtain lung shapes thate included tumor regions and minimized oversegmentation near the diaphragm and mediastinum. The diaphragm is easily removed due to the broad concave structure, however the mediastinum has many very small concavities resulting in minor oversegmentation that cannot be removed without removing the tumor. We empirically determined $ \alpha=25 $ to give good results for all subjects in this study. Prior to the next step, we performed Laplacian smoothing~\cite{herrmann1976} on the alpha shape surface to remove sharp edges. 
+There is a trade off between oversegmentation and undersegmentation when choosing $\alpha$. If $\alpha$ is too large, the mediastinum is oversegmented, however decreasing $\alpha$ too much can remove tumors (Figure~\ref{fig:alphashapes}).  We experimented with different values of $\alpha$ to obtain lung shapes that included tumor regions and minimized oversegmentation near the diaphragm and mediastinum. The diaphragm is easily removed due to the broad concave structure, however the mediastinum has many very small concavities resulting in minor oversegmentation that cannot be removed without removing the tumor. We empirically determined $ \alpha=25 $ to give good results for all subjects in this study. Prior to the next step, we performed Laplacian smoothing~\cite{herrmann1976} on the alpha shape surface to remove sharp edges. 
 
 %
 % http://texblog.org/2007/08/28/placing-figurestables-side-by-side-subfigure/
@@ -149,7 +149,8 @@ There is a trade off between oversegmentation and undersegmentation when choosin
   \label{fig:tris_CT}
   }
   \subfigure[Initial Mask]{
-  \includegraphics[trim={5 150 300 100},clip,width=1.0in, height=1.4in]{figs/pass}
+  \includegraphics[trim={5 150 300 100},clip,width=1.0in, 
+  \height=1.4in]{figs/pass}
   \label{fig:tris_Mask}
   }
   \subfigure[Point Set]{
@@ -325,8 +326,6 @@ Figure~\ref{fig:dist} shows the average unsigned surface distances for the initi
     \includegraphics[width=1.08in]{figs/PFS-032_manual}
     \label{fig:PFS-032_manual}
     }\\
-
-    
     
 
   \caption{Segmentation at each step of the proposed method for

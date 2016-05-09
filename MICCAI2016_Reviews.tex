@@ -1,0 +1,252 @@
+Bad news, just got notified that our MICCAI paper was rejected :(
+
+===================================
+Sarah E. Gerard
+Ph.D. Candidate & Graduate Research Assistant
+Biomedical Engineering
+1440 Seamans Center
+The University of Iowa
+===================================
+Stay hungry. Stay foolish.
+
+________________________________________
+From: msabuncu@nmr.mgh.harvard.edu <msabuncu@nmr.mgh.harvard.edu>
+Sent: Friday, April 29, 2016 10:56 AM
+To: Gerard, Sarah E
+Cc: msabuncu@nmr.mgh.harvard.edu
+Subject: MICCAI 2016 notification - #763
+
+Dear Sarah Gerard
+
+We regret to inform you that your submission
+763 - Alpha Shapes for Lung Segmentation in the Presence of Large Tumors
+was rejected in the early decision phase of the review process due to
+insufficient support from the external reviewers. The anonymous
+reviews of your paper are listed below and can also be seen in the
+submission system.
+
+We had a significant number of papers submitted to MICCAI 2016 and
+competition for acceptance is particularly tough this year.
+
+Please consider submitting a contribution to one of the satellite
+workshops. The deadlines for most workshops are in early June 2016.
+
+With best wishes,
+Sandy Wells, Mert Sabuncu, Leo Joskowicz, and Gözde Ünal
+MICCAI 2016 Program Chairs
+
+-------------------------------------------
+
+------------------------ Submission 763, Review 1 ------------------------
+
+Title: Alpha Shapes for Lung Segmentation in the Presence of Large Tumors
+
+
+Overall Recommendation
+
+   Short of acceptable - Probably reject
+
+Out of scope
+
+
+Expertise
+
+   Expert
+
+Summary, Contributions and Significance
+
+   The authors propose to use alpha shapes to initialize a graph-cut
+   algorithm for the segmentation of the lungs in 3D CT data. Alpha shapes
+   are a generalization of the convex hull, where alpha allows to tune
+   between a tight shape (small alpha) and the convex hull (large alpha).
+   The lung is first segmented using region growing; the alpha shape of that
+   is computed and then smoothed; an existing graph cut method is applied
+   using the smoothed alpha shape as the prior; the OR is taken between the
+   graph cut result and the region growing result. The method is evaluated
+   using 12 thoracic CT scans that include large tumors, using the mean
+   surface distance and the dice overlap with manual segmentations as
+   evaluation criteria. Compared to just region growing the results are
+   improved.
+
+Strengths
+
+   The paper is clearly written and it is a nice idea to exploit alpha
+   shapes as a way to remove large holes in the initial region growing
+   segmentation. The topic is of interest to our community.
+
+Weaknesses
+
+   As both alpha shapes and graph cut lung segmentation with a shape prior
+   exist, the contribution of the paper is in the combination of both. This
+   is a nice idea, but not groundbreaking. The evaluation compares the
+   proposed method only with the region growing result, while it would have
+   been interesting to perform a more thorough comparison. Questions that
+   arise are for example: What is the performance when the region growing
+   method was chosen as a shape prior? What if simply the convex hull was
+   chosen as a shape prior? How robust is the graph cut for changes in
+   alpha, as perhaps quite similar end results are obtained for different
+   alphas. Could the graph cut perform equally well with a worse
+   initialization when the search profile length of the graph is increased?
+   It therefore remains somewhat unclear what the exact contribution of
+   alpha shapes are wrt this problem.
+
+Constructive Feedback
+
+   - Section 2.2 of the paper could be somewhat condensed. Section 2.3 could
+   then benefit from some extra explanation of the graph cut and the shape
+   prior.
+   - As the lung is a large structure, the Dice overlap is less meaningful.
+   Also the mean of the surface distances is perhaps less informative. It
+   would therefore be of interest to include maximum errors (Hausdorf
+   distance) or better yet a visualization of the distribution of the errors
+   (box-plot).
+   - As the mediastinum is indeed quite subjective to annotate you may
+   consider adding results only showing the distance errors at the lung
+   surface excluding this region. It could simply be defined by a
+   ball-shaped region similar to what is done in the EMPIRE10 challenge.
+   - Why is the data resampled to isotropic voxel volumes? Is there a
+   limitation in the algorithm or in the implementation, or is there another
+   reason for doing that?
+   - Regarding the patient-specific selection of alpha (future work item),
+   plotting alpha against the resulting alpha shape volume or number of
+   edges may be informative here. Sudden changes indicate the inclusion of
+   larger regions.
+
+
+------------------------ Submission 763, Review 2 ------------------------
+
+Title: Alpha Shapes for Lung Segmentation in the Presence of Large Tumors
+
+
+Overall Recommendation
+
+   Poor quality - Reject
+
+Out of scope
+
+
+Expertise
+
+   Expert
+
+Summary, Contributions and Significance
+
+   The paper presents an approach for the segmentation of lungs in CT images
+   in the presence of large tumors. The segmentation method consists of four
+   steps: (1) initial threshold-based segmentation given in Ref. [3]; (2)
+   generation of an alpha-shape from the segmentation (for given alpha); (3)
+   graph-cut based segmentation refinement; (4) combination of initial
+   segmentation and graph-cut result.
+   The method was tested on twelve breath-hold CT images and shows
+   significant improvements compared with the initial threshold-based
+   segmentation.
+
+Strengths
+
+   The contribution of the paper is the application of alpha-shapes to lung
+   segmentation.
+   The paper is well written. The method is straightforward, easy to
+   implement and improves the segmentation performance in the presence of
+   tumors compared to threshold-based methods. The research is
+   comprehensible and reproducible because all parameters, implementation
+   hints and computation times are given in the paper.
+
+Weaknesses
+
+   The motivation of the paper is unclear. The introduction focus on 4D CT
+   images, however, only 3D image information is used in the method and in
+   the evaluation. The application to 4D data is not addressed.
+   The contribution of the paper is the use of alpha-shapes in step (2) of
+   the pipeline. All other steps, including the refinement based on the
+   combination of graph-cuts and threshold based segmentation were presented
+   before, see e.g.[1] for a nearly identical pipeline for 4D image data
+   using 4D SSMs as central step.
+   The motivation for using alpha-shapes remains nebulous. The obvious
+   limitation of this approach -- finding the correct alpha value -- is
+   addressed by an manual optimization on the test data: “We empirically
+   determined α = 25 to give good results for all subjects in this
+   study.”
+   There is no evidence that an sufficient alpha can be found in other data
+   sets, e.g. for tumors with large connections to the lung boundary. (see
+   e.g. the tumor in Fig. 1 of the mentioned paper [1]).
+   Further, the the algorithm needs a large computational effort due to the
+   necessary Delaunay triangulation of a large number of points in 3D. This
+   will possibly prevent the direct application to 4D images.
+
+   [1] Wilms, Matthias, Jan Ehrhardt, and Heinz Handels. "A 4D statistical
+   shape model for automated segmentation of lungs with large tumors."
+   Medical Image Computing and Computer-Assisted Intervention–MICCAI 2012.
+   Springer Berlin Heidelberg, 2012. 347-354.
+
+Constructive Feedback
+
+   The authors should address the application of this approach to 4D CT
+   images as motivated in the introduction. Further, approaches for an
+   automatic selection of the alpha value should be presented.
+   I further miss a discussion what assumption are made to tumor size and
+   position in order to ensure the successful application of this method.
+
+
+------------------------ Submission 763, Review 3 ------------------------
+
+Title: Alpha Shapes for Lung Segmentation in the Presence of Large Tumors
+
+
+Overall Recommendation
+
+   Poor quality - Reject
+
+Out of scope
+
+
+Expertise
+
+   Expert
+
+Summary, Contributions and Significance
+
+   Authors presented an automatic method to segment lungs with
+   large tumors in CT images using an initial intensity based segmentation
+   followed by alpha shape construction and graph search.
+
+Strengths
+
+   1- Paper is written in a simple language
+   2- The problem is clear
+   3- The method is described in a simple way.
+
+Weaknesses
+
+   1-The introduction is short
+   2- The literature review did not cover the state-of-art.
+   3- There is no contributions in the proposed work. All steps are
+   previously proposed by others.
+   4- 12 subjects are very low number to test their approach.
+   5- The number of subjects per each groups of datasets (with and without
+   tumor) is not clear. Authors mentioned that they divided them 11+1 but
+   the figure 4 didn't show this.
+   6-There is no comparison with other methods.
+   7- Discussion of the results are completely insufficient.
+   8- There are many typos.
+
+Constructive Feedback
+
+   The only contribuition of this paper is the application of  others
+   apporach on lung imaging, and  I think the paper is really not ready for
+   a publication at MICCAI.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
